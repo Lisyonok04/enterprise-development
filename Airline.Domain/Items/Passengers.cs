@@ -14,7 +14,7 @@ namespace Airline.Domain.Items
         /// <summary>
         /// Unique passenger's ID.
         /// </summary>
-        public required int ID { get; set; }
+        public int ID { get; set; }
 
         /// <summary>
         /// The number of passenger's pasport.
@@ -29,7 +29,7 @@ namespace Airline.Domain.Items
         /// <summary>
         /// Passenger's date of birth.
         /// </summary>
-        public required string DateOfBirth { get; set; }
+        public DateOnly? DateOfBirth { get; set; }
 
     }
 }

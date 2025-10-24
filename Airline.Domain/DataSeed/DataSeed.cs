@@ -8,7 +8,8 @@ using Airline.Domain.Items;
 namespace Airline.Domain.DataSeed;
 
 /// <summary>
-/// Seeds test data for the airline system, including model families, plane models, passengers, flights, and tickets.
+/// Seeds test data for the airline system, including model families, 
+/// plane models, passengers, flights, and tickets.
 /// </summary>
 public class DataSeed
 {
@@ -30,7 +31,6 @@ public class DataSeed
     /// <summary>
     /// Initializes the model families with predefined data.
     /// </summary>
-    /// <returns>List of <see cref="ModelFamily"/> objects.</returns>
     private static List<ModelFamily> InitModelFamilies() => new()
     {
         new() 
@@ -42,7 +42,7 @@ public class DataSeed
         new() 
         { 
             ID = 2, 
-            NameOfFamily = "737 Family", 
+            NameOfFamily = "767 Family", 
             ManufacturerName = "Boeing" 
         },
         new() 
@@ -68,8 +68,6 @@ public class DataSeed
     /// <summary>
     /// Initializes plane models linked to their families.
     /// </summary>
-    /// <param name="families">List of model families.</param>
-    /// <returns>List of <see cref="PlaneModel"/> objects.</returns>
     private static List<PlaneModel> InitPlaneModels(List<ModelFamily> families) => new()
     {
         new() 
@@ -84,7 +82,7 @@ public class DataSeed
         new() 
         { 
             ID = 2, 
-            ModelName = "B737-800", 
+            ModelName = "B767-300", 
             PlaneFamily = families[1], 
             MaxRange = 5500, 
             PassengerCapacity = 189, 
@@ -122,7 +120,6 @@ public class DataSeed
     /// <summary>
     /// Initializes a list of passengers.
     /// </summary>
-    /// <returns>List of <see cref="Passenger"/> objects.</returns>
     private static List<Passenger> InitPassengers() => new()
     {
         new() 
@@ -130,87 +127,85 @@ public class DataSeed
             ID = 1, 
             Passport = "477419070", 
             PassengerName = "Ivanov Ivan", 
-            DateOfBirth = "1990-01-15" 
+            DateOfBirth = new(1990, 01, 15) 
         },
         new() 
         { 
             ID = 2, 
             Passport = "719011722", 
             PassengerName = "Petrov Petr", 
-            DateOfBirth = "1985-05-22" 
+            DateOfBirth = new(1985, 05, 22) 
         },
         new() 
         { 
             ID = 3, 
             Passport = "269997862", 
             PassengerName = "Alyohin Alexey", 
-            DateOfBirth = "1992-03-10" 
+            DateOfBirth = new(1992, 03, 10) 
         },
         new() 
         { 
             ID = 4, 
             Passport = "690256588", 
             PassengerName = "Kuzina Anna", 
-            DateOfBirth = "1991-07-30" 
+            DateOfBirth = new(1991, 07, 30) 
         },
         new() 
         { 
             ID = 5, 
             Passport = "816817823", 
             PassengerName = "Kuzin Dmitry", 
-            DateOfBirth = "1988-11-05" 
+            DateOfBirth = new(1988, 11, 05) 
         },
         new() 
         { 
             ID = 6, 
             Passport = "303776467", 
             PassengerName = "Nikitich Dobrynya", 
-            DateOfBirth = "1995-09-18" 
+            DateOfBirth = new(1995, 09, 18) 
         },
         new() 
         { 
             ID = 7, 
             Passport = "510907182", 
             PassengerName = "Popovich Alex", 
-            DateOfBirth = "1993-04-12" 
+            DateOfBirth = new(1993, 04, 12) 
         },
         new() 
         { 
             ID = 8, 
             Passport = "463835340", 
             PassengerName = "Kolyan", 
-            DateOfBirth = "1987-08-25" 
+            DateOfBirth = new(1987, 08, 25) 
         },
         new() 
         { 
             ID = 9, 
             Passport = "877654233", 
             PassengerName = "Lebedev Nikolay Ivanovich", 
-            DateOfBirth = "1960-02-14" 
+            DateOfBirth = new(1960, 02, 14) 
         },
         new() 
         { 
             ID = 10, 
             Passport = "112971133", 
             PassengerName = "Sokolov Tigran", 
-            DateOfBirth = "1994-12-03" 
+            DateOfBirth = new(1994, 12, 03) 
         }
     };
 
     /// <summary>
     /// Initializes flights with plane models and schedules.
     /// </summary>
-    /// <param name="models">List of plane models.</param>
-    /// <returns>List of <see cref="Flight"/> objects.</returns>
     private static List<Flight> InitFlights(List<PlaneModel> models) => new()
     {
-        // Moscow → Berlin (2h) — A320
+
         new() 
         { 
             ID = 1, 
             FlightCode = "SU101", 
-            DepartureCity = "Moscow", 
-            ArrivalCity = "Berlin",
+            DepartureCity = "Samara", 
+            ArrivalCity = "Wonderland",
             DepartureDate = new(2025, 10, 10), 
             ArrivalDate = new(2025, 10, 10),
             DepartureTime = new(8, 0, 0), 
@@ -218,7 +213,6 @@ public class DataSeed
             Model = models[0] 
         },
 
-        // Moscow → Paris (3.5h) — B737-800
         new() 
         {
             ID = 2, 
@@ -228,11 +222,10 @@ public class DataSeed
             DepartureDate = new(2025, 10, 10), 
             ArrivalDate = new(2025, 10, 10),
             DepartureTime = new(9, 0, 0), 
-            TravelTime = TimeSpan.FromHours(3.5), 
+            TravelTime = TimeSpan.FromHours(3), 
             Model = models[1] 
         },
 
-        // Berlin → Paris (1.5h) — B777-300ER
         new() 
         { 
             ID = 3, 
@@ -242,25 +235,23 @@ public class DataSeed
             DepartureDate = new(2025, 10, 10), 
             ArrivalDate = new(2025, 10, 10),
             DepartureTime = new(11, 0, 0), 
-            TravelTime = TimeSpan.FromHours(1.5), 
+            TravelTime = TimeSpan.FromHours(5), 
             Model = models[2] 
         },
 
-        // Moscow → Berlin (2h) — B787-9
         new() 
         { 
             ID = 4, 
             FlightCode = "SU104", 
-            DepartureCity = "Moscow", 
-            ArrivalCity = "Berlin",
+            DepartureCity = "Samara", 
+            ArrivalCity = "Wonderland",
             DepartureDate = new(2025, 10, 11), 
             ArrivalDate = new(2025, 10, 11),
             DepartureTime = new(14, 0, 0), 
-            TravelTime = TimeSpan.FromHours(2), 
+            TravelTime = TimeSpan.FromHours(2.5), 
             Model = models[3] 
         },
 
-        // Rome → Milan (1h) — A330-300
         new() 
         { 
             ID = 5, 
@@ -270,11 +261,10 @@ public class DataSeed
             DepartureDate = new(2025, 10, 11), 
             ArrivalDate = new(2025, 10, 11),
             DepartureTime = new(7, 0, 0), 
-            TravelTime = TimeSpan.FromHours(1), 
+            TravelTime = TimeSpan.FromHours(4.5), 
             Model = models[4] 
         },
 
-        // Moscow → Tokyo (10h) — A320
         new() 
         { 
             ID = 6, 
@@ -284,11 +274,10 @@ public class DataSeed
             DepartureDate = new(2025, 10, 12), 
             ArrivalDate = new(2025, 10, 12),
             DepartureTime = new(1, 0, 0), 
-            TravelTime = TimeSpan.FromHours(10), 
+            TravelTime = TimeSpan.FromHours(15), 
             Model = models[0] 
         },
 
-        // New York → London (6h) — B737-800
         new() 
         { 
             ID = 7, 
@@ -302,7 +291,6 @@ public class DataSeed
             Model = models[1] 
         },
 
-        // Paris → Moscow (3h) — A320
         new() 
         { 
             ID = 8, 
@@ -312,7 +300,7 @@ public class DataSeed
             DepartureDate = new(2025, 10, 13), 
             ArrivalDate = new(2025, 10, 13),
             DepartureTime = new(13, 0, 0), 
-            TravelTime = TimeSpan.FromHours(3), 
+            TravelTime = TimeSpan.FromHours(7), 
             Model = models[0] 
         }
     };
@@ -320,12 +308,9 @@ public class DataSeed
     /// <summary>
     /// Initializes tickets linking flights to passengers.
     /// </summary>
-    /// <param name="flights">List of flights.</param>
-    /// <param name="passengers">List of passengers.</param>
-    /// <returns>List of <see cref="Ticket"/> objects.</returns>
     private static List<Ticket> InitTickets(List<Flight> flights, List<Passenger> passengers) => new()
     {
-        // SU101 (Moscow → Berlin) — 5 пассажиров, 2 без багажа
+
         new() 
         { 
             ID = 1, 
@@ -333,7 +318,7 @@ public class DataSeed
             Passenger = passengers[0], 
             SeatNumber = "12A", 
             HandLuggage = true, 
-            BaggageWeight = 20.0 
+            BaggageWeight = 15.6 
         },
         new() 
         { 
@@ -360,7 +345,7 @@ public class DataSeed
             Passenger = passengers[3], 
             SeatNumber = "13A", 
             HandLuggage = true, 
-            BaggageWeight = 15.0 
+            BaggageWeight = 1.2 
         },
         new() 
         { 
@@ -372,7 +357,6 @@ public class DataSeed
             BaggageWeight = 10.0 
         },
 
-        // SU102 (Moscow → Paris) — 3 пассажира, 1 без багажа
         new() 
         { 
             ID = 6, 
@@ -380,7 +364,7 @@ public class DataSeed
             Passenger = passengers[5], 
             SeatNumber = "15A", 
             HandLuggage = true, 
-            BaggageWeight = 12.0 
+            BaggageWeight = 5.2 
         },
         new() 
         { 
@@ -389,7 +373,7 @@ public class DataSeed
             Passenger = passengers[6], 
             SeatNumber = "15B", 
             HandLuggage = true, 
-            BaggageWeight = 8.0 
+            BaggageWeight = 18.0 
         },
         new() 
         { 
@@ -401,7 +385,6 @@ public class DataSeed
             BaggageWeight = null 
         },
 
-        // SU103 (Berlin → Paris) — 2 пассажира
         new() 
         { 
             ID = 9, 
@@ -409,7 +392,7 @@ public class DataSeed
             Passenger = passengers[8], 
             SeatNumber = "20A", 
             HandLuggage = true, 
-            BaggageWeight = 5.0 
+            BaggageWeight = 3.2 
         },
         new() 
         { 
@@ -421,7 +404,6 @@ public class DataSeed
             BaggageWeight = 7.0 
         },
 
-        // SU104 (Moscow → Berlin) — 1 пассажир без багажа
         new() 
         { 
             ID = 11, 
@@ -429,10 +411,9 @@ public class DataSeed
             Passenger = passengers[0], 
             SeatNumber = "10A", 
             HandLuggage = false, 
-            BaggageWeight = null 
+            BaggageWeight = 4.2 
         },
 
-        // AZ201 (Rome → Milan) — 1 пассажир
         new() 
         { 
             ID = 12, 
@@ -443,7 +424,6 @@ public class DataSeed
             BaggageWeight = 6.0 
         },
 
-        // SU200 (Moscow → Tokyo) — 1 пассажир
         new() 
         { 
             ID = 13, 
@@ -454,7 +434,6 @@ public class DataSeed
             BaggageWeight = 25.0 
         },
 
-        // DL100 (New York → London) — 1 пассажир без багажа
         new() 
         { 
             ID = 14, 
@@ -465,7 +444,6 @@ public class DataSeed
             BaggageWeight = null 
         },
 
-        // SU105 (Paris → Moscow) — 2 пассажира без багажа
         new() 
         { 
             ID = 15, 
@@ -473,7 +451,7 @@ public class DataSeed
             Passenger = passengers[4], 
             SeatNumber = "7A", 
             HandLuggage = true, 
-            BaggageWeight = null 
+            BaggageWeight = 11.6
         },
         new() 
         { 
@@ -482,7 +460,7 @@ public class DataSeed
             Passenger = passengers[5], 
             SeatNumber = "7B", 
             HandLuggage = false, 
-            BaggageWeight = null 
+            BaggageWeight = 0.5 
         }
     };
 }

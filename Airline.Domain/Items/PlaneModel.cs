@@ -15,7 +15,7 @@ namespace Airline.Domain.Items
         /// <summary>
         /// Unique plane model's ID.
         /// </summary>
-        public required int ID { get; set; }
+        public int ID { get; set; }
 
         /// <summary>
         /// The name of plane model.

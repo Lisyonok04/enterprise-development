@@ -14,7 +14,7 @@ namespace Airline.Domain.Items
         /// <summary>
         /// Unique model's ID.
         /// </summary>
-        public required int ID { get; set; }
+        public int ID { get; set; }
 
         /// <summary>
         /// The name of model's family.

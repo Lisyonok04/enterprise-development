@@ -14,7 +14,7 @@ namespace Airline.Domain.Items
         /// <summary>
         /// Unique flight's ID.
         /// </summary>
-        public required int ID { get; set; }
+        public int ID { get; set; }
 
         /// <summary>
         /// Flight's code.
@@ -52,7 +52,7 @@ namespace Airline.Domain.Items
         public TimeSpan? TravelTime { get; set; }
 
         /// <summary>
-        /// The type of plane for the flight.
+        /// The model of plane.
         /// </summary>
         public required PlaneModel Model { get; set; }
     }
