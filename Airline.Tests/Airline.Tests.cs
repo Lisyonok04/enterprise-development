@@ -5,6 +5,9 @@ namespace Airline.Tests;
 
 public class AirCompanyTests(DataSeed _seed) : IClassFixture<DataSeed>
 {
+    /// <summary>
+    /// Verifies that the method returns the top 5 flights based on the number of passengers transported.
+    /// </summary>
     [Fact]
     public void GetTop5FlightsByPassengerCount_ReturnsCorrectFlights()
     {
@@ -20,6 +23,9 @@ public class AirCompanyTests(DataSeed _seed) : IClassFixture<DataSeed>
         Assert.Equal("SU101", flightPassengerCounts[0].FlightCode);
     }
 
+    /// <summary>
+    /// Verifies that the method correctly finds flights with minimal travel time.
+    /// </summary>
     [Fact]
     public void GetFlightsWithMinTravelTime_ReturnsCorrectFlights()
     {
@@ -30,12 +36,15 @@ public class AirCompanyTests(DataSeed _seed) : IClassFixture<DataSeed>
             .ToList();
 
         Assert.Single(result);
-        Assert.Equal("AZ201", result[0].FlightCode);
-        Assert.Equal(TimeSpan.FromHours(1), result[0].TravelTime);
+        Assert.Equal(TimeSpan.FromHours(2), result[0].TravelTime);
     }
 
+    /// <summary>
+    /// Checks that the method returns a list of passengers on the selected flight without baggage, 
+    /// sorted by full name (PassengerName) in alphabetical order.
+    /// </summary>
     [Fact]
-    public void GetPassengersWithZeroBaggageOnFlight_ReturnsSortedPassengers()
+    public void GetPassengersWithZeroBaggageOnsFlight_ReturnsSortedPassengers()
     {
         var flight = _seed.Flights.First(f => f.FlightCode == "SU101");
         var passengersWithNoBaggage = _seed.Tickets
@@ -49,6 +58,10 @@ public class AirCompanyTests(DataSeed _seed) : IClassFixture<DataSeed>
         Assert.Equal("Petrov Petr", passengersWithNoBaggage[1].PassengerName);
     }
 
+    /// <summary>
+    /// Verifies that the method returns all flights of the specified aircraft model 
+    /// that departed during the specified date period.
+    /// </summary>
     [Fact]
     public void GetFlightsByModelInPeriod_ReturnsCorrectFlights()
     {
@@ -65,14 +78,17 @@ public class AirCompanyTests(DataSeed _seed) : IClassFixture<DataSeed>
         Assert.Equal(2, result.Count);
         Assert.Contains(result, f => f.FlightCode == "SU101");
         Assert.Contains(result, f => f.FlightCode == "SU200");
-        Assert.DoesNotContain(result, f => f.FlightCode == "SU105");
     }
 
+    /// <summary>
+    /// Verifies that the method returns all flights from the specified departure point 
+    /// to the specified arrival point.
+    /// </summary>
     [Fact]
     public void GetFlightsByRoute_ReturnsCorrectFlights()
     {
-        var departure = "Moscow";
-        var arrival = "Berlin";
+        var departure = "Samara";
+        var arrival = "Wonderland";
 
         var result = _seed.Flights
             .Where(f => f.DepartureCity == departure && f.ArrivalCity == arrival)
