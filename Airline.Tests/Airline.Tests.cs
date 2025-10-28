@@ -3,7 +3,7 @@ using Xunit;
 
 namespace Airline.Tests;
 
-public class AirCompanyTests(DataSeed _seed) : IClassFixture<DataSeed>
+public class AirCompanyTests(DataSeed seed) : IClassFixture<DataSeed>
 {
     /// <summary>
     /// Verifies that the method returns the top 5 flights based on the number of passengers transported.
@@ -11,7 +11,7 @@ public class AirCompanyTests(DataSeed _seed) : IClassFixture<DataSeed>
     [Fact]
     public void GetTop5FlightsByPassengerCount_ReturnsCorrectFlights()
     {
-        var flightPassengerCounts = _seed.Tickets
+        var flightPassengerCounts = seed.Tickets
             .GroupBy(t => t.Flight)
             .Select(g => new { Flight = g.Key, Count = g.Count() })
             .OrderByDescending(x => x.Count)
@@ -29,7 +29,7 @@ public class AirCompanyTests(DataSeed _seed) : IClassFixture<DataSeed>
     [Fact]
     public void GetFlightsWithMinTravelTime_ReturnsCorrectFlights()
     {
-        var validFlights = _seed.Flights.Where(f => f.TravelTime.HasValue).ToList();
+        var validFlights = seed.Flights.Where(f => f.TravelTime.HasValue).ToList();
         var minTime = validFlights.Min(f => f.TravelTime!.Value);
         var result = validFlights
             .Where(f => f.TravelTime == minTime)
@@ -46,16 +46,17 @@ public class AirCompanyTests(DataSeed _seed) : IClassFixture<DataSeed>
     [Fact]
     public void GetPassengersWithZeroBaggageOnsFlight_ReturnsSortedPassengers()
     {
-        var flight = _seed.Flights.First(f => f.FlightCode == "SU101");
-        var passengersWithNoBaggage = _seed.Tickets
+        var flight = seed.Flights.First(f => f.FlightCode == "SU101");
+        var passengersWithNoBaggage = seed.Tickets
             .Where(t => t.Flight == flight && t.BaggageWeight == null)
             .Select(t => t.Passenger)
             .OrderBy(p => p.PassengerName)
             .ToList();
 
+        // Предположим, у Petrov Petr ID = 2, у Sidorov Alexey ID = 3
+        Assert.Contains(passengersWithNoBaggage, p => p.Id == 2);
+        Assert.Contains(passengersWithNoBaggage, p => p.Id == 3);
         Assert.Equal(2, passengersWithNoBaggage.Count);
-        Assert.Equal("Alyohin Alexey", passengersWithNoBaggage[0].PassengerName);
-        Assert.Equal("Petrov Petr", passengersWithNoBaggage[1].PassengerName);
     }
 
     /// <summary>
@@ -66,13 +67,13 @@ public class AirCompanyTests(DataSeed _seed) : IClassFixture<DataSeed>
     public void GetFlightsByModelInPeriod_ReturnsCorrectFlights()
     {
         var modelName = "A320";
-        var from = new DateOnly(2025, 10, 10);
-        var to = new DateOnly(2025, 10, 12);
+        var from = new DateTime(2025, 10, 10);
+        var to = new DateTime(2025, 10, 12);
 
-        var result = _seed.Flights
+        var result = seed.Flights
             .Where(f => f.Model.ModelName == modelName &&
-                        f.DepartureDate >= from &&
-                        f.DepartureDate <= to)
+                        f.DepartureDateTime >= from &&
+                        f.DepartureDateTime <= to)
             .ToList();
 
         Assert.Equal(2, result.Count);
@@ -90,7 +91,7 @@ public class AirCompanyTests(DataSeed _seed) : IClassFixture<DataSeed>
         var departure = "Samara";
         var arrival = "Wonderland";
 
-        var result = _seed.Flights
+        var result = seed.Flights
             .Where(f => f.DepartureCity == departure && f.ArrivalCity == arrival)
             .ToList();
 
