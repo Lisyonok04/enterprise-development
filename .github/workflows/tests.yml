@@ -23,7 +23,7 @@ jobs:
       run: dotnet restore ./Airline/Airline.sln
 
     - name: Build solution
-      run: dotnet build ./Airline/Airline.sln --no-restore
+      run: dotnet build ./Airline.sln --no-restore
 
     - name: Run tests
       run: dotnet test ./Airline/Airline.Tests/Airline.Tests.csproj --no-build --verbosity detailed
