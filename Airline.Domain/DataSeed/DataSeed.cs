@@ -1,4 +1,5 @@
 ﻿using Airline.Domain.Items;
+
 namespace Airline.Domain.DataSeed;
 
 /// <summary>
@@ -8,27 +9,27 @@ namespace Airline.Domain.DataSeed;
 public class DataSeed
 {
     /// <summary>
-    /// Gets the list of seeded model families.
+    /// The list of model families.
     /// </summary>
     public List<ModelFamily> ModelFamilies { get; }
 
     /// <summary>
-    /// Gets the list of seeded plane models.
+    /// The list of plane models.
     /// </summary>
     public List<PlaneModel> PlaneModels { get; }
 
     /// <summary>
-    /// Gets the list of seeded passengers.
+    /// The list of passengers.
     /// </summary>
     public List<Passenger> Passengers { get; }
 
     /// <summary>
-    /// Gets the list of seeded flights.
+    /// The list of flights.
     /// </summary>
     public List<Flight> Flights { get; }
 
     /// <summary>
-    /// Gets the list of seeded tickets.
+    /// The list of tickets.
     /// </summary>
     public List<Ticket> Tickets { get; }
 
