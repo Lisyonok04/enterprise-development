@@ -26,4 +26,4 @@ jobs:
       run: dotnet build ./Airline.sln --no-restore
 
     - name: Run tests
-      run: dotnet test ./Airline/Airline.Tests/Airline.Tests.csproj --no-build --verbosity detailed
+      run: dotnet test ./Airline.Tests/Airline.Tests.csproj --no-build --verbosity detailed
