@@ -18,7 +18,7 @@ public class PlaneModel
     /// <summary>
     /// The model family of the plane.
     /// </summary>
-    public required ModelFamily PlaneFamily { get; set; }
+    public required ModelFamily? PlaneFamily { get; set; }
 
     /// <summary>
     /// The max flight range of the plane model.
@@ -34,4 +34,9 @@ public class PlaneModel
     /// The cargo capacity of the plane model (tons).
     /// </summary>
     public required double CargoCapacity { get; set; }
+
+    /// <summary>
+    /// The id of model family.
+    /// </summary>
+    public string PlaneFamilyId { get; set; } = string.Empty; // ← ссылка на ModelFamily
 }

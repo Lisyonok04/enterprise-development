@@ -1,8 +1,6 @@
 ﻿using Airline.Domain.Items;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Net.Sockets;
-using System.Reflection.Emit;
+using MongoDB.EntityFrameworkCore.Extensions;
 
 namespace Airline.Infrastructure.EfCore;
 

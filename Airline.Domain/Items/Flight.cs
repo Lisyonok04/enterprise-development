@@ -43,5 +43,10 @@ public class Flight
     /// <summary>
     /// The model of plane.
     /// </summary>
-    public required PlaneModel Model { get; set; }
+    public required PlaneModel? Model { get; set; }
+
+    /// <summary>
+    /// The id of the model.
+    /// </summary>
+    public string ModelId { get; set; } = string.Empty; // ← ссылка на PlaneModel
 }

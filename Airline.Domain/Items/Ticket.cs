@@ -13,12 +13,12 @@ public class Ticket
     /// <summary>
     /// The connection between the ticket and the flight.
     /// </summary>
-    public required Flight Flight { get; set; }
+    public required Flight? Flight { get; set; }
 
     /// <summary>
     /// The connection between the ticket and the passenger.
     /// </summary>
-    public required Passenger Passenger { get; set; }
+    public required Passenger? Passenger { get; set; }
 
     /// <summary>
     /// The passenger's seat number.
@@ -34,4 +34,14 @@ public class Ticket
     /// Total baggage weight. (kilograms)
     /// </summary>
     public double? BaggageWeight { get; set; }
+
+    /// <summary>
+    /// The id to connect between the ticket and the flight.
+    /// </summary>
+    public string FlightId { get; set; } = string.Empty;     // ← ссылка на Flight
+
+    /// <summary>
+    /// The id to connect between the ticket and the passenger.
+    /// </summary>
+    public string PassengerId { get; set; } = string.Empty;  // ← ссылка на Passenger
 }
