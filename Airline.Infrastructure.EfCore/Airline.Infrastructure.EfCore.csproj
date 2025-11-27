@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.8" />
+    <PackageReference Include="MongoDB.EntityFrameworkCore" Version="8.0.0-preview.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Airline.Application.Contracts\Airline.Application.Contracts.csproj" />
     <ProjectReference Include="..\Airline.Domain\Airline.Domain.csproj" />
   </ItemGroup>
 
