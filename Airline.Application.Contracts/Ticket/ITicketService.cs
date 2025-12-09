@@ -1,10 +1,10 @@
+using Airline.Application.Contracts.Flight;
+using Airline.Application.Contracts.Passenger;
+
 namespace Airline.Application.Contracts.Ticket;
 
-public interface ITicketService
+public interface ITicketService : IApplicationService<TicketDto, CreateTicketDto, int>
 {
-    public Task<List<TicketDto>> GetAllAsync();
-    public Task<TicketDto?> GetByIdAsync(string id);
-    public Task<TicketDto> CreateAsync(TicketDto ticket);
-    public Task<TicketDto> UpdateAsync(TicketDto ticket);
-    public Task<bool> DeleteAsync(string id);
+    public Task<FlightDto> GetFlightAsync(int ticketId);
+    public Task<PassengerDto> GetPassengerAsync(int ticketId);
 }

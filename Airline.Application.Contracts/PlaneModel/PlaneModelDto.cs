@@ -5,14 +5,14 @@ namespace Airline.Application.Contracts.PlaneModel;
 /// </summary>
 /// <param name="Id">Unique identifier of the plane model.</param>
 /// <param name="ModelName">Name of the plane model.</param>
-/// <param name="PlaneFamilyId">ID of the associated model family.</param>
+/// <param name="ModelFamilyId">ID of the associated model family.</param>
 /// <param name="MaxRange">Maximum flight range (km).</param>
 /// <param name="PassengerCapacity">Passenger capacity.</param>
 /// <param name="CargoCapacity">Cargo capacity (tons).</param>
 public record PlaneModelDto(
-    string Id,
+    int Id,
     string ModelName,
-    string PlaneFamilyId,
+    int ModelFamilyId,
     double MaxRange,
     double PassengerCapacity,
     double CargoCapacity);

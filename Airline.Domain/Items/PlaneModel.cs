@@ -38,5 +38,5 @@ public class PlaneModel
     /// <summary>
     /// The id of model family.
     /// </summary>
-    public string PlaneFamilyId { get; set; } = string.Empty; // ← ссылка на ModelFamily
+    public int ModelFamilyId { get; set; } 
 }

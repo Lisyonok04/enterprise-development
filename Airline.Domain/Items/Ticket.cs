@@ -38,10 +38,10 @@ public class Ticket
     /// <summary>
     /// The id to connect between the ticket and the flight.
     /// </summary>
-    public string FlightId { get; set; } = string.Empty;     // ← ссылка на Flight
+    public int FlightId { get; set; }    // ← ссылка на Flight
 
     /// <summary>
     /// The id to connect between the ticket and the passenger.
     /// </summary>
-    public string PassengerId { get; set; } = string.Empty;  // ← ссылка на Passenger
+    public int PassengerId { get; set; }  // ← ссылка на Passenger
 }

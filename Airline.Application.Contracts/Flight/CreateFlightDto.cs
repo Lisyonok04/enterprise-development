@@ -15,4 +15,4 @@ public record CreateFlightDto(
     string ArrivalCity,
     DateTime DepartureDateTime,
     DateTime ArrivalDateTime,
-    string ModelId);
+    int ModelId);

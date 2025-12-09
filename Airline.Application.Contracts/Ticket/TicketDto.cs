@@ -10,9 +10,9 @@ namespace Airline.Application.Contracts.Ticket;
 /// <param name="HandLuggage">Indicates if hand luggage is present.</param>
 /// <param name="BaggageWeight">Total baggage weight in kilograms (null if no baggage).</param>
 public record TicketDto(
-    string Id,
-    string FlightId,
-    string PassengerId,
+    int Id,
+    int FlightId,
+    int PassengerId,
     string SeatNumber,
     bool HandLuggage,
     double? BaggageWeight);

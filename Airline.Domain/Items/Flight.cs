@@ -48,5 +48,5 @@ public class Flight
     /// <summary>
     /// The id of the model.
     /// </summary>
-    public string ModelId { get; set; } = string.Empty; // ← ссылка на PlaneModel
+    public int ModelId { get; set; } // ← ссылка на PlaneModel
 }

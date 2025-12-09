@@ -5,9 +5,10 @@ public interface IApplicationService<TDto, TCreateUpdateDto, TKey>
     where TCreateUpdateDto : class
     where TKey : struct
 {
-    public Task<TDto> Create(TCreateUpdateDto dto);
-    public Task<TDto?> Get(TKey dtoId);
-    public Task<IList<TDto>> GetAll();
-    public Task<TDto> Update(TCreateUpdateDto dto, TKey dtoId);
-    public Task<bool> Delete(TKey dtoId);
+    public Task<TDto> CreateAsync(TCreateUpdateDto dto);
+    public Task<TDto?> GetByIdAsync(TKey id);
+    public Task<IList<TDto>> GetAllAsync();
+    public Task<TDto> UpdateAsync(TCreateUpdateDto dto, TKey id);
+    public Task<bool> DeleteAsync(TKey id);
+
 }

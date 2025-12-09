@@ -11,10 +11,10 @@ namespace Airline.Application.Contracts.Flight;
 /// <param name="ArrivalDateTime">Date and time of arrival.</param>
 /// <param name="ModelId">ID of the plane model used for the flight.</param>
 public record FlightDto(
-    string Id,
+    int Id,
     string FlightCode,
     string DepartureCity,
     string ArrivalCity,
     DateTime DepartureDateTime,
     DateTime ArrivalDateTime,
-    string ModelId);
+    int ModelId);
