@@ -13,34 +13,34 @@ public class AirlineDbContext(DbContextOptions<AirlineDbContext> options) : DbCo
     /// <summary>
     /// Collection of aircraft model families.
     /// </summary>
-    public DbSet<ModelFamily> ModelFamilies => Set<ModelFamily>();
+    public DbSet<ModelFamily> ModelFamilies { get; set; }
 
     /// <summary>
     /// Collection of aircraft models.
     /// </summary>
-    public DbSet<PlaneModel> PlaneModels => Set<PlaneModel>();
+    public DbSet<PlaneModel> PlaneModels { get; set; }
 
     /// <summary>
     /// Collection of flights.
     /// </summary>
-    public DbSet<Flight> Flights => Set<Flight>();
+    public DbSet<Flight> Flights { get; set; }
 
     /// <summary>
     /// Collection of passengers.
     /// </summary>
-    public DbSet<Passenger> Passengers => Set<Passenger>();
+    public DbSet<Passenger> Passengers { get; set; }
 
     /// <summary>
     /// Collection of tickets.
     /// </summary>
-    public DbSet<Ticket> Tickets => Set<Ticket>();
+    public DbSet<Ticket> Tickets { get; set; }
 
     /// <summary>
     /// Configures entity-to-collection mappings and property names for MongoDB.
     /// </summary>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        // Отключаем автоматические транзакции (MongoDB не поддерживает)
+
         Database.AutoTransactionBehavior = AutoTransactionBehavior.Never;
 
         // ModelFamily → collection "model_families"
