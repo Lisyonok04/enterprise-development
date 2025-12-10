@@ -46,7 +46,6 @@ public class TicketService(
 
     public async Task<bool> DeleteAsync(int id) => await ticketRepository.DeleteAsync(id);
 
-    // Уникальные методы
     public async Task<FlightDto> GetFlightAsync(int ticketId)
     {
         var ticket = await ticketRepository.GetAsync(ticketId)

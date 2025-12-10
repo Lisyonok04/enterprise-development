@@ -41,7 +41,6 @@ public class PlaneModelService(
 
     public async Task<bool> DeleteAsync(int id) => await planeModelRepository.DeleteAsync(id);
 
-    // Уникальный метод
     public async Task<ModelFamilyDto> GetModelFamilyAsync(int modelId)
     {
         var model = await planeModelRepository.GetAsync(modelId)

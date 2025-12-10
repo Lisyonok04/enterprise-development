@@ -1,4 +1,4 @@
-<Project Sdk="Aspire.AppHost.Sdk/13.0.2">
+﻿<Project Sdk="Aspire.AppHost.Sdk/13.0.2">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -8,8 +8,14 @@
     <UserSecretsId>c5640d6f-84de-4448-bbef-056105f657a0</UserSecretsId>
   </PropertyGroup>
 
+
   <ItemGroup>
     <ProjectReference Include="..\Airline.Api.Host\Airline.Api.Host.csproj" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <PackageReference Include="Aspire.Hosting.MongoDB" Version="13.0.0" />
   </ItemGroup>
 
 </Project>

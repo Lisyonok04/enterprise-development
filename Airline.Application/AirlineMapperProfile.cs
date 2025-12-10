@@ -10,9 +10,7 @@ namespace Airline.Application;
 
 public class AirlineProfile : Profile
 {
-    /// <summary>
-    /// Конструктор профиля, создающий связи между Entity и Dto классами
-    /// </summary>
+    // Конструктор профиля, создающий связи между Entity и Dto классами
     public AirlineProfile()
     {
         CreateMap<ModelFamily, ModelFamilyDto>();
