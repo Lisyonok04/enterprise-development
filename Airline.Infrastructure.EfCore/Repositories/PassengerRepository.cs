@@ -1,10 +1,10 @@
-﻿using Airline.Domain.Repository;
+﻿using Airline.Domain;
 using Airline.Domain.Items;
 using Microsoft.EntityFrameworkCore;
 
 namespace Airline.Infrastructure.EfCore.Repositories;
 
-public class PassengerRepository(AirlineDbContext context) : IRepository<Passenger, string>
+public class PassengerRepository(AirlineDbContext context) : IRepository<Passenger, int>
 {
     public async Task<Passenger> CreateAsync(Passenger entity)
     {
@@ -13,7 +13,7 @@ public class PassengerRepository(AirlineDbContext context) : IRepository<Passeng
         return entry.Entity;
     }
 
-    public async Task<bool> DeleteAsync(string id)
+    public async Task<bool> DeleteAsync(int id)
     {
         var entity = await context.Passengers.FindAsync(id);
         if (entity == null) return false;
@@ -23,7 +23,7 @@ public class PassengerRepository(AirlineDbContext context) : IRepository<Passeng
         return true;
     }
 
-    public async Task<Passenger?> GetAsync(string id) =>
+    public async Task<Passenger?> GetAsync(int id) =>
         await context.Passengers.FindAsync(id);
 
     public async Task<IList<Passenger>> GetAllAsync() =>

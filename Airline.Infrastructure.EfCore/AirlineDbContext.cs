@@ -63,7 +63,7 @@ public class AirlineDbContext(DbContextOptions<AirlineDbContext> options) : DbCo
             entity.Property(m => m.MaxRange).HasElementName("max_range_km");
             entity.Property(m => m.PassengerCapacity).HasElementName("passenger_capacity");
             entity.Property(m => m.CargoCapacity).HasElementName("cargo_capacity_tons");
-            entity.Property(m => m.PlaneFamilyId).HasElementName("family_id"); // ← ссылка на ModelFamily
+            entity.Property(m => m.ModelFamilyId).HasElementName("family_id");
         });
 
         // Passenger → collection "passengers"
