@@ -1,33 +1,43 @@
-using Airline.Api.Host; 
 using Airline.Application;
+using Airline.Application.Contracts;
 using Airline.Application.Contracts.Flight;
 using Airline.Application.Contracts.ModelFamily;
 using Airline.Application.Contracts.Passenger;
 using Airline.Application.Contracts.PlaneModel;
 using Airline.Application.Contracts.Ticket;
-using Airline.Application.Services; 
+using Airline.Application.Services;
 using Airline.Domain;
 using Airline.Domain.DataSeed;
 using Airline.Domain.Items;
-using Airline.Infrastructure.EfCore; 
+using Airline.Infrastructure.EfCore;
 using Airline.Infrastructure.EfCore.Repositories;
 using Airline.ServiceDefaults;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MongoDB.Driver;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// ============= Aspire Service Defaults =============
 builder.AddServiceDefaults();
 
-
+// ============= DataSeeder =============
 builder.Services.AddSingleton<DataSeed>();
 
+// ============= AutoMapper =============
 builder.Services.AddAutoMapper(config =>
 {
     config.AddProfile(new AirlineProfile());
 });
 
+// ============= Репозитории =============
+builder.Services.AddTransient<IRepository<Flight, int>, FlightRepository>();
+builder.Services.AddTransient<IRepository<Passenger, int>, PassengerRepository>();
+builder.Services.AddTransient<IRepository<Ticket, int>, TicketRepository>();
+builder.Services.AddTransient<IRepository<PlaneModel, int>, PlaneModelRepository>();
+builder.Services.AddTransient<IRepository<ModelFamily, int>, ModelFamilyRepository>();
+
+// ============= Сервисы =============
 builder.Services.AddScoped<IFlightService, FlightService>();
 builder.Services.AddScoped<IPassengerService, PassengerService>();
 builder.Services.AddScoped<ITicketService, TicketService>();
@@ -35,61 +45,102 @@ builder.Services.AddScoped<IPlaneModelService, PlaneModelService>();
 builder.Services.AddScoped<IModelFamilyService, ModelFamilyService>();
 builder.Services.AddScoped<IAnalyticsService, AnalyticsService>();
 
-builder.Services.AddScoped<IRepository<Flight, int>, FlightRepository>();
-builder.Services.AddScoped<IRepository<Passenger, int>, PassengerRepository>();
-builder.Services.AddScoped<IRepository<Ticket, int>, TicketRepository>();
-builder.Services.AddScoped<IRepository<PlaneModel, int>, PlaneModelRepository>();
-builder.Services.AddScoped<IRepository<ModelFamily, int>, ModelFamilyRepository>();
-
-builder.Services.AddDbContext<AirlineDbContext>(options =>
-{
-    var connectionString = builder.Configuration.GetConnectionString("mongodb");
-    if (string.IsNullOrEmpty(connectionString))
-        connectionString = "mongodb://localhost:27017";
-
-    options.UseMongoDB(connectionString, "AirlineDb");
-});
-
-// Контроллеры и API
+// ============= Контроллеры и API =============
 builder.Services.AddControllers()
-    .ConfigureApiBehaviorOptions(options =>
+    .AddJsonOptions(options =>
     {
-        options.SuppressModelStateInvalidFilter = true;
+        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
     });
 
-// Swagger/OpenAPI 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options =>
+
+// ============= Swagger с XML-комментариями =============
+builder.Services.AddSwaggerGen(c =>
 {
-    options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+    //c.SwaggerDoc("v1", new OpenApiInfo { Title = "Airline API", Version = "v1" });
+
+    var assemblies = AppDomain.CurrentDomain.GetAssemblies()
+        .Where(a => a.GetName().Name!.StartsWith("Airline"))
+        .Distinct();
+
+    foreach (var assembly in assemblies)
     {
-        Title = "Airline API",
-        Version = "v1",
-        Description = "REST API для управления авиакомпанией"
-    });
+        var xmlFile = $"{assembly.GetName().Name}.xml";
+        var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+        if (File.Exists(xmlPath))
+            c.IncludeXmlComments(xmlPath);
+    }
 });
 
-builder.Services.Configure<ApiBehaviorOptions>(options =>
+// ============= MongoDB через Aspire =============
+//builder.AddMongoDBClient("airline");
+
+//builder.Services.AddDbContext<AirlineDbContext>((services, options) =>
+//{
+//  var db = services.GetRequiredService<IMongoDatabase>();
+//options.UseMongoDB(db.Client, db.DatabaseNamespace.DatabaseName);
+//});
+builder.AddMongoDBClient("airlineClient");
+
+builder.Services.AddDbContext<AirlineDbContext>((services, o) =>
 {
-    options.SuppressMapClientErrors = true;
+    var db = services.GetRequiredService<IMongoDatabase>();
+    o.UseMongoDB(db.Client, db.DatabaseNamespace.DatabaseName);
 });
 
+
+// ============= Запуск приложения =============
 var app = builder.Build();
 
-app.MapDefaultEndpoints();
+app.MapDefaultEndpoints(); // Health checks для Aspire
 
 // Swagger
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI(options =>
+    app.UseSwaggerUI(c =>
     {
-        options.SwaggerEndpoint("/swagger/v1/swagger.json", "Airline API v1");
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Airline API v1");
     });
 }
 
+// ============= Заполнение базы данных =============
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<AirlineDbContext>();
+    var seed = scope.ServiceProvider.GetRequiredService<DataSeed>();
+
+    // Проверяем, пуста ли коллекция Flights
+    var flightsExist = dbContext.Flights.Any();
+    if (!flightsExist)
+    {
+        // ModelFamilies
+        foreach (var family in seed.ModelFamilies)
+            await dbContext.ModelFamilies.AddAsync(family);
+
+        // PlaneModels
+        foreach (var model in seed.PlaneModels)
+            await dbContext.PlaneModels.AddAsync(model);
+
+        // Passengers
+        foreach (var passenger in seed.Passengers)
+            await dbContext.Passengers.AddAsync(passenger);
+
+        // Flights
+        foreach (var flight in seed.Flights)
+            await dbContext.Flights.AddAsync(flight);
+
+        // Tickets
+        foreach (var ticket in seed.Tickets)
+            await dbContext.Tickets.AddAsync(ticket);
+
+        await dbContext.SaveChangesAsync();
+        app.Logger.LogInformation("База данных успешно заполнена тестовыми данными.");
+    }
+}
+
 app.UseHttpsRedirection();
-app.UseRouting();
+app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
