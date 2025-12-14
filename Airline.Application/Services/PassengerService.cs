@@ -17,10 +17,16 @@ public class PassengerService(
     public async Task<PassengerDto> CreateAsync(CreatePassengerDto dto)
     {
         var passenger = mapper.Map<Passenger>(dto);
+        var maxId = 0;
+        var last = await passengerRepository.GetAllAsync();
+        if (last.Any())
+        {
+            maxId = last.Max(p => p.Id);
+        }
+        passenger.Id = maxId + 1;
         var created = await passengerRepository.CreateAsync(passenger);
         return mapper.Map<PassengerDto>(created);
     }
-
     public async Task<PassengerDto?> GetByIdAsync(int id)
     {
         var entity = await passengerRepository.GetAsync(id);
@@ -43,6 +49,9 @@ public class PassengerService(
 
     public async Task<IList<TicketDto>> GetTicketsAsync(int passengerId)
     {
+        var passengerExists = await passengerRepository.GetAsync(passengerId) != null;
+        if (!passengerExists)
+            throw new KeyNotFoundException($"Passenger with ID '{passengerId}' not found.");
         var all = await ticketRepository.GetAllAsync();
         return all.Where(t => t.PassengerId == passengerId)
                   .Select(mapper.Map<TicketDto>).ToList();
@@ -50,6 +59,9 @@ public class PassengerService(
 
     public async Task<IList<FlightDto>> GetFlightsAsync(int passengerId)
     {
+        var passengerExists = await passengerRepository.GetAsync(passengerId) != null;
+        if (!passengerExists)
+            throw new KeyNotFoundException($"Passenger with ID '{passengerId}' not found.");
         var ticketDtos = await GetTicketsAsync(passengerId);
         var flightIds = ticketDtos.Select(t => t.FlightId).ToHashSet();
         var allFlights = await flightRepository.GetAllAsync();

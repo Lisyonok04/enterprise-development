@@ -14,8 +14,15 @@ public class ModelFamilyService(
 {
     public async Task<ModelFamilyDto> CreateAsync(CreateModelFamilyDto dto)
     {
-        var family = mapper.Map<ModelFamily>(dto);
-        var created = await familyRepository.CreateAsync(family);
+        var modelFamily = mapper.Map<ModelFamily>(dto);
+        var maxId = 0;
+        var last = await familyRepository.GetAllAsync();
+        if (last.Any())
+        {
+            maxId = last.Max(f => f.Id);
+        }
+        modelFamily.Id = maxId + 1;
+        var created = await familyRepository.CreateAsync(modelFamily);
         return mapper.Map<ModelFamilyDto>(created);
     }
 

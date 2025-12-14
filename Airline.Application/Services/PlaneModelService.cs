@@ -12,12 +12,21 @@ public class PlaneModelService(
     IMapper mapper
 ) : IPlaneModelService
 {
+
     public async Task<PlaneModelDto> CreateAsync(CreatePlaneModelDto dto)
     {
         if (await familyRepository.GetAsync(dto.ModelFamilyId) == null)
             throw new KeyNotFoundException($"Model family '{dto.ModelFamilyId}' not found.");
-        var model = mapper.Map<PlaneModel>(dto);
-        var created = await planeModelRepository.CreateAsync(model);
+
+        var planeModel = mapper.Map<PlaneModel>(dto);
+        var maxId = 0;
+        var last = await planeModelRepository.GetAllAsync();
+        if (last.Any())
+        {
+            maxId = last.Max(m => m.Id);
+        }
+        planeModel.Id = maxId + 1;
+        var created = await planeModelRepository.CreateAsync(planeModel);
         return mapper.Map<PlaneModelDto>(created);
     }
 

@@ -22,6 +22,13 @@ public class TicketService(
             throw new KeyNotFoundException($"Passenger '{dto.PassengerId}' not found.");
 
         var ticket = mapper.Map<Ticket>(dto);
+        var maxId = 0;
+        var last = await ticketRepository.GetAllAsync();
+        if (last.Any())
+        {
+            maxId = last.Max(t => t.Id);
+        }
+        ticket.Id = maxId + 1;
         var created = await ticketRepository.CreateAsync(ticket);
         return mapper.Map<TicketDto>(created);
     }
