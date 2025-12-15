@@ -4,6 +4,8 @@ using Airline.Application.Contracts.Ticket;
 using Airline.Domain;
 using Airline.Domain.Items;
 using AutoMapper;
+using System.Text.RegularExpressions;
+using System.Xml.Linq;
 
 namespace Airline.Application.Services;
 
@@ -24,6 +26,8 @@ public class PassengerService(
             maxId = last.Max(p => p.Id);
         }
         passenger.Id = maxId + 1;
+        if (string.IsNullOrWhiteSpace(dto.PassengerName) || Regex.IsMatch(dto.PassengerName, @"\d"))
+            throw new ArgumentException("Passenger name must not be empty or contain digits.");
         var created = await passengerRepository.CreateAsync(passenger);
         return mapper.Map<PassengerDto>(created);
     }
@@ -41,6 +45,8 @@ public class PassengerService(
         var existing = await passengerRepository.GetAsync(id)
             ?? throw new KeyNotFoundException($"Passenger '{id}' not found.");
         mapper.Map(dto, existing);
+        if (string.IsNullOrWhiteSpace(dto.PassengerName) || Regex.IsMatch(dto.PassengerName, @"\d"))
+            throw new ArgumentException("Passenger name must not be empty or contain digits.");
         var updated = await passengerRepository.UpdateAsync(existing);
         return mapper.Map<PassengerDto>(updated);
     }

@@ -29,6 +29,8 @@ public class TicketService(
             maxId = last.Max(t => t.Id);
         }
         ticket.Id = maxId + 1;
+        if (dto.BaggageWeight < 0)
+            throw new ArgumentException("BaggageWeight cannot be negative.");
         var created = await ticketRepository.CreateAsync(ticket);
         return mapper.Map<TicketDto>(created);
     }
@@ -47,6 +49,8 @@ public class TicketService(
         var existing = await ticketRepository.GetAsync(id)
             ?? throw new KeyNotFoundException($"Ticket '{id}' not found.");
         mapper.Map(dto, existing);
+        if (dto.BaggageWeight < 0)
+            throw new ArgumentException("BaggageWeight cannot be negative.");
         var updated = await ticketRepository.UpdateAsync(existing);
         return mapper.Map<TicketDto>(updated);
     }

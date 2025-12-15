@@ -7,4 +7,4 @@ namespace Airline.Application.Contracts.Passenger;
 /// <param name="Passport">Passport number.</param>
 /// <param name="PassengerName">Full name of the passenger.</param>
 /// <param name="DateOfBirth">Date of birth (YYYY-MM-DD).</param>
-public record PassengerDto(int Id, string Passport, string PassengerName, string DateOfBirth);
+public record PassengerDto(int Id, string Passport, string PassengerName, DateOnly DateOfBirth);

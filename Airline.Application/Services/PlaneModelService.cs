@@ -26,6 +26,8 @@ public class PlaneModelService(
             maxId = last.Max(m => m.Id);
         }
         planeModel.Id = maxId + 1;
+        if (dto.PassengerCapacity < 0 || dto.CargoCapacity < 0)
+            throw new ArgumentException("Capacity values cannot be negative.");
         var created = await planeModelRepository.CreateAsync(planeModel);
         return mapper.Map<PlaneModelDto>(created);
     }
@@ -44,6 +46,8 @@ public class PlaneModelService(
         var existing = await planeModelRepository.GetAsync(id)
             ?? throw new KeyNotFoundException($"Plane model '{id}' not found.");
         mapper.Map(dto, existing);
+        if (dto.PassengerCapacity < 0 || dto.CargoCapacity < 0)
+            throw new ArgumentException("Capacity values cannot be negative.");
         var updated = await planeModelRepository.UpdateAsync(existing);
         return mapper.Map<PlaneModelDto>(updated);
     }
