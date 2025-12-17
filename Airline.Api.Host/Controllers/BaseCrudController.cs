@@ -49,16 +49,16 @@ public abstract class CrudControllerBase<TDto, TCreateUpdateDto, TKey>(
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<TDto>> Create(TCreateUpdateDto dto)
     {
-        logger.LogInformation("Метод Create вызван в {Controller} с данными: {@Dto}", GetType().Name, dto);
+        logger.LogInformation("Create method called in {Controller} with data: {@Dto}", GetType().Name, dto);
         try
         {
             var result = await service.CreateAsync(dto);
-            logger.LogInformation("Метод Create успешно выполнен в {Controller}", GetType().Name);
+            logger.LogInformation("Create method completed successfully in {Controller}", GetType().Name);
             return CreatedAtAction(nameof(GetById), new { id = GetEntityId(result) }, result);
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Ошибка в методе Create контроллера {Controller}", GetType().Name);
+            logger.LogError(ex, "Error in Create method of controller {Controller}", GetType().Name);
             return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
         }
     }
@@ -82,21 +82,21 @@ public abstract class CrudControllerBase<TDto, TCreateUpdateDto, TKey>(
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<TDto>> Update(TKey id, TCreateUpdateDto dto)
     {
-        logger.LogInformation("Метод Update вызван в {Controller} с id={Id} и данными: {@Dto}", GetType().Name, id, dto);
+        logger.LogInformation("Update method called in {Controller} with id={Id} and data: {@Dto}", GetType().Name, id, dto);
         try
         {
             var result = await service.UpdateAsync(dto, id);
-            logger.LogInformation("Метод Update успешно выполнен в {Controller}", GetType().Name);
+            logger.LogInformation("Update method completed successfully in {Controller}", GetType().Name);
             return Ok(result);
         }
         catch (KeyNotFoundException)
         {
-            logger.LogWarning("Сущность с id={Id} не найдена в {Controller}", id, GetType().Name);
+            logger.LogWarning("Entity with id={Id} not found in {Controller}", id, GetType().Name);
             return NotFound();
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Ошибка в методе Update контроллера {Controller}", GetType().Name);
+            logger.LogError(ex, "Error in Update method of controller {Controller}", GetType().Name);
             return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
         }
     }
@@ -119,21 +119,21 @@ public abstract class CrudControllerBase<TDto, TCreateUpdateDto, TKey>(
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Delete(TKey id)
     {
-        logger.LogInformation("Метод Delete вызван в {Controller} с id={Id}", GetType().Name, id);
+        logger.LogInformation("Delete method called in {Controller} with id={Id}", GetType().Name, id);
         try
         {
             var success = await service.DeleteAsync(id);
             if (!success)
             {
-                logger.LogWarning("Сущность с id={Id} не найдена при удалении в {Controller}", id, GetType().Name);
+                logger.LogWarning("Entity with id={Id} not found during deletion in {Controller}", id, GetType().Name);
                 return NotFound();
             }
-            logger.LogInformation("Метод Delete успешно выполнен в {Controller}", GetType().Name);
+            logger.LogInformation("Delete method completed successfully in {Controller}", GetType().Name);
             return NoContent();
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Ошибка в методе Delete контроллера {Controller}", GetType().Name);
+            logger.LogError(ex, "Error in Delete method of controller {Controller}", GetType().Name);
             return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
         }
     }
@@ -153,16 +153,16 @@ public abstract class CrudControllerBase<TDto, TCreateUpdateDto, TKey>(
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<IList<TDto>>> GetAll()
     {
-        logger.LogInformation("Метод GetAll вызван в {Controller}", GetType().Name);
+        logger.LogInformation("GetAll method called in {Controller}", GetType().Name);
         try
         {
             var result = await service.GetAllAsync();
-            logger.LogInformation("Метод GetAll успешно выполнен в {Controller}", GetType().Name);
+            logger.LogInformation("GetAll method completed successfully in {Controller}", GetType().Name);
             return Ok(result);
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Ошибка в методе GetAll контроллера {Controller}", GetType().Name);
+            logger.LogError(ex, "Error in GetAll method of controller {Controller}", GetType().Name);
             return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
         }
     }
@@ -185,21 +185,21 @@ public abstract class CrudControllerBase<TDto, TCreateUpdateDto, TKey>(
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<TDto>> GetById(TKey id)
     {
-        logger.LogInformation("Метод GetById вызван в {Controller} с id={Id}", GetType().Name, id);
+        logger.LogInformation("GetById method called in {Controller} with id={Id}", GetType().Name, id);
         try
         {
             var result = await service.GetByIdAsync(id);
             if (result == null)
             {
-                logger.LogWarning("Сущность с id={Id} не найдена в {Controller}", id, GetType().Name);
+                logger.LogWarning("Entity with id={Id} not found in {Controller}", id, GetType().Name);
                 return NotFound();
             }
-            logger.LogInformation("Метод GetById успешно выполнен в {Controller}", GetType().Name);
+            logger.LogInformation("GetById method completed successfully in {Controller}", GetType().Name);
             return Ok(result);
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Ошибка в методе GetById контроллера {Controller}", GetType().Name);
+            logger.LogError(ex, "Error in GetById method of controller {Controller}", GetType().Name);
             return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
         }
     }

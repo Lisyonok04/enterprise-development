@@ -3,6 +3,7 @@ using Airline.Application.Contracts.Passenger;
 using Airline.Application.Contracts.PlaneModel;
 using Airline.Application.Contracts.Ticket;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace Airline.Api.Host.Controllers;
 
@@ -34,21 +35,21 @@ public class FlightsController(
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<PlaneModelDto>> GetPlaneModel(int flightId)
     {
-        logger.LogInformation("Метод GetPlaneModel вызван с flightId={FlightId}", flightId);
+        logger.LogInformation("GetPlaneModel method called with flightId={FlightId}", flightId);
         try
         {
             var model = await flightService.GetPlaneModelAsync(flightId);
-            logger.LogInformation("Метод GetPlaneModel успешно выполнен для flightId={FlightId}", flightId);
+            logger.LogInformation("GetPlaneModel method completed successfully for flightId={FlightId}", flightId);
             return Ok(model);
         }
         catch (KeyNotFoundException)
         {
-            logger.LogWarning("Модель самолёта не найдена для flightId={FlightId}", flightId);
+            logger.LogWarning("Aircraft model not found for flightId={FlightId}", flightId);
             return NotFound();
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Ошибка в методе GetPlaneModel для flightId={FlightId}", flightId);
+            logger.LogError(ex, "Error in GetPlaneModel method for flightId={FlightId}", flightId);
             return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
         }
     }
@@ -67,21 +68,21 @@ public class FlightsController(
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<IList<TicketDto>>> GetTickets(int flightId)
     {
-        logger.LogInformation("Метод GetTickets вызван с flightId={FlightId}", flightId);
+        logger.LogInformation("GetTickets method called with flightId={FlightId}", flightId);
         try
         {
             var tickets = await flightService.GetTicketsAsync(flightId);
-            logger.LogInformation("Метод GetTickets успешно выполнен для flightId={FlightId}", flightId);
+            logger.LogInformation("GetTickets method completed successfully for flightId={FlightId}", flightId);
             return Ok(tickets);
         }
         catch (KeyNotFoundException)
         {
-            logger.LogWarning("Билеты не найдены для flightId={FlightId}", flightId);
+            logger.LogWarning("Tickets not found for flightId={FlightId}", flightId);
             return NotFound();
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Ошибка в методе GetTickets для flightId={FlightId}", flightId);
+            logger.LogError(ex, "Error in GetTickets method for flightId={FlightId}", flightId);
             return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
         }
     }
@@ -100,21 +101,21 @@ public class FlightsController(
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<IList<PassengerDto>>> GetPassengers(int flightId)
     {
-        logger.LogInformation("Метод GetPassengers вызван с flightId={FlightId}", flightId);
+        logger.LogInformation("GetPassengers method called with flightId={FlightId}", flightId);
         try
         {
             var passengers = await flightService.GetPassengersAsync(flightId);
-            logger.LogInformation("Метод GetPassengers успешно выполнен для flightId={FlightId}", flightId);
+            logger.LogInformation("GetPassengers method completed successfully for flightId={FlightId}", flightId);
             return Ok(passengers);
         }
         catch (KeyNotFoundException)
         {
-            logger.LogWarning("Пассажиры не найдены для flightId={FlightId}", flightId);
+            logger.LogWarning("Passengers not found for flightId={FlightId}", flightId);
             return NotFound();
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Ошибка в методе GetPassengers для flightId={FlightId}", flightId);
+            logger.LogError(ex, "Error in GetPassengers method for flightId={FlightId}", flightId);
             return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
         }
     }

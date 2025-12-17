@@ -117,7 +117,7 @@ using (var scope = app.Services.CreateScope())
             await dbContext.Tickets.AddAsync(ticket);
 
         await dbContext.SaveChangesAsync();
-        app.Logger.LogInformation("Ѕаза данных успешно заполнена тестовыми данными.");
+        app.Logger.LogInformation("Database successfully populated with test data.");
     }
 }
 

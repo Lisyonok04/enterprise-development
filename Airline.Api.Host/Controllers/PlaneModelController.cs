@@ -1,6 +1,7 @@
 ﻿using Airline.Application.Contracts.ModelFamily;
 using Airline.Application.Contracts.PlaneModel;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace Airline.Api.Host.Controllers;
 
@@ -32,21 +33,21 @@ public class PlaneModelsController(
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<ModelFamilyDto>> GetModelFamily(int modelId)
     {
-        logger.LogInformation("Метод GetModelFamily вызван с modelId={ModelId}", modelId);
+        logger.LogInformation("GetModelFamily method called with modelId={ModelId}", modelId);
         try
         {
             var family = await planeModelService.GetModelFamilyAsync(modelId);
-            logger.LogInformation("Метод GetModelFamily успешно выполнен для modelId={ModelId}", modelId);
+            logger.LogInformation("GetModelFamily method completed successfully for modelId={ModelId}", modelId);
             return Ok(family);
         }
         catch (KeyNotFoundException)
         {
-            logger.LogWarning("Семейство моделей не найдено для modelId={ModelId}", modelId);
+            logger.LogWarning("Model family not found for modelId={ModelId}", modelId);
             return NotFound();
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Ошибка в методе GetModelFamily для modelId={ModelId}", modelId);
+            logger.LogError(ex, "Error in GetModelFamily method for modelId={ModelId}", modelId);
             return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
         }
     }

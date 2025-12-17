@@ -30,16 +30,16 @@ public class AnalyticsController(
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<List<FlightDto>>> GetTopFlightsByPassengerCount([FromQuery] int top = 5)
     {
-        logger.LogInformation("Метод GetTopFlightsByPassengerCount вызван с top={Top}", top);
+        logger.LogInformation("GetTopFlightsByPassengerCount method called with top={Top}", top);
         try
         {
             var flights = await analyticsService.GetTopFlightsByPassengerCountAsync(top);
-            logger.LogInformation("Метод GetTopFlightsByPassengerCount успешно выполнен");
+            logger.LogInformation("GetTopFlightsByPassengerCount method completed successfully");
             return Ok(flights);
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Ошибка в методе GetTopFlightsByPassengerCount");
+            logger.LogError(ex, "Error in GetTopFlightsByPassengerCount method");
             return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
         }
     }
@@ -57,16 +57,16 @@ public class AnalyticsController(
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<List<FlightDto>>> GetFlightsWithMinTravelTime()
     {
-        logger.LogInformation("Метод GetFlightsWithMinTravelTime вызван");
+        logger.LogInformation("GetFlightsWithMinTravelTime method called");
         try
         {
             var flights = await analyticsService.GetFlightsWithMinTravelTimeAsync();
-            logger.LogInformation("Метод GetFlightsWithMinTravelTime успешно выполнен");
+            logger.LogInformation("GetFlightsWithMinTravelTime method completed successfully");
             return Ok(flights);
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Ошибка в методе GetFlightsWithMinTravelTime");
+            logger.LogError(ex, "Error in GetFlightsWithMinTravelTime method");
             return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
         }
     }
@@ -87,21 +87,21 @@ public class AnalyticsController(
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<List<PassengerDto>>> GetPassengersWithZeroBaggage([FromQuery] int flightId)
     {
-        logger.LogInformation("Метод GetPassengersWithZeroBaggage вызван с flightId={FlightId}", flightId);
+        logger.LogInformation("GetPassengersWithZeroBaggage method called with flightId={FlightId}", flightId);
         try
         {
             var passengers = await analyticsService.GetPassengersWithZeroBaggageOnFlightAsync(flightId);
-            logger.LogInformation("Метод GetPassengersWithZeroBaggage успешно выполнен для flightId={FlightId}", flightId);
+            logger.LogInformation("GetPassengersWithZeroBaggage method completed successfully for flightId={FlightId}", flightId);
             return Ok(passengers);
         }
         catch (KeyNotFoundException)
         {
-            logger.LogWarning("Рейс не найден для flightId={FlightId}", flightId);
+            logger.LogWarning("Flight not found for flightId={FlightId}", flightId);
             return NotFound();
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Ошибка в методе GetPassengersWithZeroBaggage для flightId={FlightId}", flightId);
+            logger.LogError(ex, "Error in GetPassengersWithZeroBaggage method for flightId={FlightId}", flightId);
             return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
         }
     }
@@ -125,16 +125,16 @@ public class AnalyticsController(
         [FromQuery] DateTime from,
         [FromQuery] DateTime to)
     {
-        logger.LogInformation("Метод GetFlightsByModelInPeriod вызван с modelId={ModelId}, from={From}, to={To}", modelId, from, to);
+        logger.LogInformation("GetFlightsByModelInPeriod method called with modelId={ModelId}, from={From}, to={To}", modelId, from, to);
         try
         {
             var flights = await analyticsService.GetFlightsByModelInPeriodAsync(modelId, from, to);
-            logger.LogInformation("Метод GetFlightsByModelInPeriod успешно выполнен");
+            logger.LogInformation("GetFlightsByModelInPeriod method completed successfully");
             return Ok(flights);
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Ошибка в методе GetFlightsByModelInPeriod");
+            logger.LogError(ex, "Error in GetFlightsByModelInPeriod method");
             return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
         }
     }
@@ -156,16 +156,16 @@ public class AnalyticsController(
         [FromQuery] string departure,
         [FromQuery] string arrival)
     {
-        logger.LogInformation("Метод GetFlightsByRoute вызван с departure={Departure}, arrival={Arrival}", departure, arrival);
+        logger.LogInformation("GetFlightsByRoute method called with departure={Departure}, arrival={Arrival}", departure, arrival);
         try
         {
             var flights = await analyticsService.GetFlightsByRouteAsync(departure, arrival);
-            logger.LogInformation("Метод GetFlightsByRoute успешно выполнен");
+            logger.LogInformation("GetFlightsByRoute method completed successfully");
             return Ok(flights);
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Ошибка в методе GetFlightsByRoute");
+            logger.LogError(ex, "Error in GetFlightsByRoute method");
             return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
         }
     }
