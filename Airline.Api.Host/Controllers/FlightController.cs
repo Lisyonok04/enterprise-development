@@ -6,15 +6,28 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Airline.Api.Host.Controllers;
 
+/// <summary>
+/// Controller for managing flights and retrieving associated data.
+/// Inherits from <see cref="CrudControllerBase{TDto, TCreateUpdateDto, TKey}"/> 
+/// to provide standardized CRUD operations.
+/// </summary>
 [Route("api/[controller]")]
 public class FlightsController(
     IFlightService flightService,
     ILogger<FlightsController> logger
 ) : CrudControllerBase<FlightDto, CreateFlightDto, int>(flightService, logger)
 {
-
+    /// <inheritdoc />
     protected override int GetEntityId(FlightDto dto) => dto.Id;
 
+    /// <summary>
+    /// Retrieves the aircraft model associated with a specific flight.
+    /// </summary>
+    /// <param name="flightId">The unique identifier of the flight.</param>
+    /// <returns>The aircraft model DTO linked to the flight.</returns>
+    /// <response code="200">Returns the associated aircraft model.</response>
+    /// <response code="404">If the flight or aircraft model is not found.</response>
+    /// <response code="500">If an unexpected error occurs.</response>
     [HttpGet("{flightId}/model")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -40,6 +53,14 @@ public class FlightsController(
         }
     }
 
+    /// <summary>
+    /// Retrieves all tickets associated with a specific flight.
+    /// </summary>
+    /// <param name="flightId">The unique identifier of the flight.</param>
+    /// <returns>A list of ticket DTOs linked to the flight.</returns>
+    /// <response code="200">Returns the list of associated tickets.</response>
+    /// <response code="404">If the flight is not found.</response>
+    /// <response code="500">If an unexpected error occurs.</response>
     [HttpGet("{flightId}/tickets")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -65,6 +86,14 @@ public class FlightsController(
         }
     }
 
+    /// <summary>
+    /// Retrieves all passengers associated with a specific flight.
+    /// </summary>
+    /// <param name="flightId">The unique identifier of the flight.</param>
+    /// <returns>A list of passenger DTOs linked to the flight.</returns>
+    /// <response code="200">Returns the list of associated passengers.</response>
+    /// <response code="404">If the flight is not found.</response>
+    /// <response code="500">If an unexpected error occurs.</response>
     [HttpGet("{flightId}/passengers")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]

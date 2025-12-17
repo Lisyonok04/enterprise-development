@@ -1,8 +1,12 @@
 namespace Airline.Application.Contracts.ModelFamily;
 
 /// <summary>
-/// DTO for creating a new model family.
+/// Data Transfer Object (DTO) for creating a new aircraft model family.
+/// Represents a group of aircraft models with common design features.
 /// </summary>
-/// <param name="NameOfFamily">Name of the model family.</param>
-/// <param name="ManufacturerName">Manufacturer of the model family.</param>
-public record CreateModelFamilyDto(string NameOfFamily, string ManufacturerName);
+/// <param name="NameOfFamily">The name of the aircraft model family (e.g., "A320 Family").</param>
+/// <param name="ManufacturerName">The name of the manufacturer (e.g., "Airbus", "Boeing").</param>
+public record CreateModelFamilyDto(
+    string NameOfFamily,
+    string ManufacturerName
+);

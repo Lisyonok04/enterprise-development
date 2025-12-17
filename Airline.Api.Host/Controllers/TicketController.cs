@@ -2,19 +2,31 @@
 using Airline.Application.Contracts.Passenger;
 using Airline.Application.Contracts.Ticket;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace Airline.Api.Host.Controllers;
 
+/// <summary>
+/// Controller for managing tickets and retrieving associated data.
+/// Inherits from <see cref="CrudControllerBase{TDto, TCreateUpdateDto, TKey}"/> 
+/// to provide standardized CRUD operations.
+/// </summary>
 [Route("api/[controller]")]
 public class TicketsController(
     ITicketService ticketService,
     ILogger<TicketsController> logger
 ) : CrudControllerBase<TicketDto, CreateTicketDto, int>(ticketService, logger)
 {
-    
+    /// <inheritdoc />
     protected override int GetEntityId(TicketDto dto) => dto.Id;
 
+    /// <summary>
+    /// Retrieves the flight associated with a specific ticket.
+    /// </summary>
+    /// <param name="ticketId">The unique identifier of the ticket.</param>
+    /// <returns>The flight DTO linked to the ticket.</returns>
+    /// <response code="200">Returns the associated flight.</response>
+    /// <response code="404">If the ticket or flight is not found.</response>
+    /// <response code="500">If an unexpected error occurs.</response>
     [HttpGet("{ticketId}/flight")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -40,6 +52,14 @@ public class TicketsController(
         }
     }
 
+    /// <summary>
+    /// Retrieves the passenger associated with a specific ticket.
+    /// </summary>
+    /// <param name="ticketId">The unique identifier of the ticket.</param>
+    /// <returns>The passenger DTO linked to the ticket.</returns>
+    /// <response code="200">Returns the associated passenger.</response>
+    /// <response code="404">If the ticket or passenger is not found.</response>
+    /// <response code="500">If an unexpected error occurs.</response>
     [HttpGet("{ticketId}/passenger")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]

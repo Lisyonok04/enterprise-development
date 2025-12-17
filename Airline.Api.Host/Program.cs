@@ -1,5 +1,4 @@
 using Airline.Application;
-using Airline.Application.Contracts;
 using Airline.Application.Contracts.Flight;
 using Airline.Application.Contracts.ModelFamily;
 using Airline.Application.Contracts.Passenger;
@@ -18,26 +17,23 @@ using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// ============= Aspire Service Defaults =============
 builder.AddServiceDefaults();
 
-// ============= DataSeeder =============
 builder.Services.AddSingleton<DataSeed>();
 
-// ============= AutoMapper =============
 builder.Services.AddAutoMapper(config =>
 {
     config.AddProfile(new AirlineProfile());
 });
 
-// ============= Репозитории =============
+// Repositories 
 builder.Services.AddTransient<IRepository<Flight, int>, FlightRepository>();
 builder.Services.AddTransient<IRepository<Passenger, int>, PassengerRepository>();
 builder.Services.AddTransient<IRepository<Ticket, int>, TicketRepository>();
 builder.Services.AddTransient<IRepository<PlaneModel, int>, PlaneModelRepository>();
 builder.Services.AddTransient<IRepository<ModelFamily, int>, ModelFamilyRepository>();
 
-// ============= Сервисы =============
+// Application Services
 builder.Services.AddScoped<IFlightService, FlightService>();
 builder.Services.AddScoped<IPassengerService, PassengerService>();
 builder.Services.AddScoped<ITicketService, TicketService>();
@@ -45,20 +41,18 @@ builder.Services.AddScoped<IPlaneModelService, PlaneModelService>();
 builder.Services.AddScoped<IModelFamilyService, ModelFamilyService>();
 builder.Services.AddScoped<IAnalyticsService, AnalyticsService>();
 
-// ============= Контроллеры и API =============
+// Controllers
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
     });
 
+// Swagger/OpenAPI
 builder.Services.AddEndpointsApiExplorer();
 
-// ============= Swagger с XML-комментариями =============
 builder.Services.AddSwaggerGen(c =>
 {
-    //c.SwaggerDoc("v1", new OpenApiInfo { Title = "Airline API", Version = "v1" });
-
     var assemblies = AppDomain.CurrentDomain.GetAssemblies()
         .Where(a => a.GetName().Name!.StartsWith("Airline"))
         .Distinct();
@@ -72,14 +66,7 @@ builder.Services.AddSwaggerGen(c =>
     }
 });
 
-// ============= MongoDB через Aspire =============
-//builder.AddMongoDBClient("airline");
-
-//builder.Services.AddDbContext<AirlineDbContext>((services, options) =>
-//{
-//  var db = services.GetRequiredService<IMongoDatabase>();
-//options.UseMongoDB(db.Client, db.DatabaseNamespace.DatabaseName);
-//});
+// MongoDB 
 builder.AddMongoDBClient("airlineClient");
 
 builder.Services.AddDbContext<AirlineDbContext>((services, o) =>
@@ -88,13 +75,10 @@ builder.Services.AddDbContext<AirlineDbContext>((services, o) =>
     o.UseMongoDB(db.Client, db.DatabaseNamespace.DatabaseName);
 });
 
-
-// ============= Запуск приложения =============
 var app = builder.Build();
 
-app.MapDefaultEndpoints(); // Health checks для Aspire
+app.MapDefaultEndpoints();
 
-// Swagger
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -104,13 +88,11 @@ if (app.Environment.IsDevelopment())
     });
 }
 
-// ============= Заполнение базы данных =============
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<AirlineDbContext>();
     var seed = scope.ServiceProvider.GetRequiredService<DataSeed>();
 
-    // Проверяем, пуста ли коллекция Flights
     var flightsExist = dbContext.Flights.Any();
     if (!flightsExist)
     {

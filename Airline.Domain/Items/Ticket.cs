@@ -38,10 +38,10 @@ public class Ticket
     /// <summary>
     /// The id to connect between the ticket and the flight.
     /// </summary>
-    public int FlightId { get; set; }    // ← ссылка на Flight
+    public int FlightId { get; set; } 
 
     /// <summary>
     /// The id to connect between the ticket and the passenger.
     /// </summary>
-    public int PassengerId { get; set; }  // ← ссылка на Passenger
+    public int PassengerId { get; set; }  
 }

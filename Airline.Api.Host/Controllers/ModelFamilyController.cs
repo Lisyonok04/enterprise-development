@@ -1,18 +1,31 @@
 ﻿using Airline.Application.Contracts.ModelFamily;
 using Airline.Application.Contracts.PlaneModel;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace Airline.Api.Host.Controllers;
 
+/// <summary>
+/// Controller for managing aircraft model families and retrieving associated data.
+/// Inherits from <see cref="CrudControllerBase{TDto, TCreateUpdateDto, TKey}"/> 
+/// to provide standardized CRUD operations.
+/// </summary>
 [Route("api/[controller]")]
 public class ModelFamiliesController(
     IModelFamilyService modelFamilyService,
     ILogger<ModelFamiliesController> logger
 ) : CrudControllerBase<ModelFamilyDto, CreateModelFamilyDto, int>(modelFamilyService, logger)
 {
+    /// <inheritdoc />
     protected override int GetEntityId(ModelFamilyDto dto) => dto.Id;
 
+    /// <summary>
+    /// Retrieves all aircraft models associated with a specific model family.
+    /// </summary>
+    /// <param name="familyId">The unique identifier of the model family.</param>
+    /// <returns>A list of aircraft model DTOs linked to the family.</returns>
+    /// <response code="200">Returns the list of associated aircraft models.</response>
+    /// <response code="404">If the model family is not found.</response>
+    /// <response code="500">If an unexpected error occurs.</response>
     [HttpGet("{familyId}/models")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]

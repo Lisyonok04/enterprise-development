@@ -5,45 +5,50 @@ using MongoDB.EntityFrameworkCore.Extensions;
 namespace Airline.Infrastructure.EfCore;
 
 /// <summary>
-/// Database context for the airline management system.
-/// Configures entity mappings and collections for MongoDB.
+/// Represents the database context for the airline management system.
+/// Configures entity-to-collection mappings and property name conventions for MongoDB.
 /// </summary>
 public class AirlineDbContext(DbContextOptions<AirlineDbContext> options) : DbContext(options)
 {
     /// <summary>
-    /// Collection of aircraft model families.
+    /// Gets or sets the collection of aircraft model families.
+    /// Mapped to the 'model_families' collection in MongoDB.
     /// </summary>
     public DbSet<ModelFamily> ModelFamilies { get; set; }
 
     /// <summary>
-    /// Collection of aircraft models.
+    /// Gets or sets the collection of aircraft models.
+    /// Mapped to the 'plane_models' collection in MongoDB.
     /// </summary>
     public DbSet<PlaneModel> PlaneModels { get; set; }
 
     /// <summary>
-    /// Collection of flights.
+    /// Gets or sets the collection of flights.
+    /// Mapped to the 'flights' collection in MongoDB.
     /// </summary>
     public DbSet<Flight> Flights { get; set; }
 
     /// <summary>
-    /// Collection of passengers.
+    /// Gets or sets the collection of passengers.
+    /// Mapped to the 'passengers' collection in MongoDB.
     /// </summary>
     public DbSet<Passenger> Passengers { get; set; }
 
     /// <summary>
-    /// Collection of tickets.
+    /// Gets or sets the collection of tickets.
+    /// Mapped to the 'tickets' collection in MongoDB.
     /// </summary>
     public DbSet<Ticket> Tickets { get; set; }
 
     /// <summary>
-    /// Configures entity-to-collection mappings and property names for MongoDB.
+    /// Configures the model by mapping entities to MongoDB collections and customizing field names.
+    /// Disables automatic transaction behavior (MongoDB does not support transactions in this context).
     /// </summary>
+    /// <param name="modelBuilder">The model builder used to configure entity mappings.</param>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-
         Database.AutoTransactionBehavior = AutoTransactionBehavior.Never;
 
-        // ModelFamily → collection "model_families"
         modelBuilder.Entity<ModelFamily>(entity =>
         {
             entity.ToCollection("model_families");
@@ -53,7 +58,6 @@ public class AirlineDbContext(DbContextOptions<AirlineDbContext> options) : DbCo
             entity.Property(f => f.ManufacturerName).HasElementName("manufacturer");
         });
 
-        // PlaneModel → collection "plane_models"
         modelBuilder.Entity<PlaneModel>(entity =>
         {
             entity.ToCollection("plane_models");
@@ -66,7 +70,6 @@ public class AirlineDbContext(DbContextOptions<AirlineDbContext> options) : DbCo
             entity.Property(m => m.ModelFamilyId).HasElementName("family_id");
         });
 
-        // Passenger → collection "passengers"
         modelBuilder.Entity<Passenger>(entity =>
         {
             entity.ToCollection("passengers");
@@ -77,7 +80,6 @@ public class AirlineDbContext(DbContextOptions<AirlineDbContext> options) : DbCo
             entity.Property(p => p.DateOfBirth).HasElementName("date_of_birth");
         });
 
-        // Flight → collection "flights"
         modelBuilder.Entity<Flight>(entity =>
         {
             entity.ToCollection("flights");
@@ -88,10 +90,9 @@ public class AirlineDbContext(DbContextOptions<AirlineDbContext> options) : DbCo
             entity.Property(f => f.ArrivalCity).HasElementName("arrival_city");
             entity.Property(f => f.DepartureDateTime).HasElementName("departure_datetime");
             entity.Property(f => f.ArrivalDateTime).HasElementName("arrival_datetime");
-            entity.Property(f => f.ModelId).HasElementName("plane_model_id"); // ← ссылка на PlaneModel
+            entity.Property(f => f.ModelId).HasElementName("plane_model_id");
         });
 
-        // Ticket → collection "tickets"
         modelBuilder.Entity<Ticket>(entity =>
         {
             entity.ToCollection("tickets");

@@ -6,6 +6,10 @@ using AutoMapper;
 
 namespace Airline.Application.Services;
 
+/// <summary>
+/// Provides analytical and reporting capabilities over airline data.
+/// Implements aggregated queries for business intelligence and operational insights.
+/// </summary>
 public class AnalyticsService(
     IRepository<Flight, int> flightRepository,
     IRepository<Ticket, int> ticketRepository,
@@ -13,12 +17,16 @@ public class AnalyticsService(
     IMapper mapper
 ) : IAnalyticsService
 {
+    /// <summary>
+    /// Retrieves the top N flights by number of passengers.
+    /// </summary>
+    /// <param name="top">The number of top flights to return (default: 5).</param>
+    /// <returns>A list of flight DTOs sorted by passenger count in descending order.</returns>
     public async Task<List<FlightDto>> GetTopFlightsByPassengerCountAsync(int top = 5)
     {
         var flights = await flightRepository.GetAllAsync();
         var tickets = await ticketRepository.GetAllAsync();
 
-        // Группируем билеты по FlightId и считаем количество
         var flightPassengerCounts = tickets
             .GroupBy(t => t.FlightId)
             .Select(g => new { FlightId = g.Key, Count = g.Count() })
@@ -27,12 +35,10 @@ public class AnalyticsService(
             .Select(x => x.FlightId)
             .ToHashSet();
 
-        // Получаем полные объекты рейсов
         var topFlights = flights
             .Where(f => flightPassengerCounts.Contains(f.Id))
             .ToList();
 
-        // Маппим в DTO и сортируем по убыванию числа пассажиров
         var flightCountMap = tickets
             .GroupBy(t => t.FlightId)
             .ToDictionary(g => g.Key, g => g.Count());
@@ -43,6 +49,10 @@ public class AnalyticsService(
             .ToList();
     }
 
+    /// <summary>
+    /// Retrieves flights with the minimal travel time.
+    /// </summary>
+    /// <returns>A list of flight DTOs with the shortest duration.</returns>
     public async Task<List<FlightDto>> GetFlightsWithMinTravelTimeAsync()
     {
         var flights = await flightRepository.GetAllAsync();
@@ -55,9 +65,16 @@ public class AnalyticsService(
             .ToList();
     }
 
+    /// <summary>
+    /// Retrieves passengers with zero baggage for a specific flight.
+    /// </summary>
+    /// <param name="flightId">The unique identifier of the flight.</param>
+    /// <returns>A list of passenger DTOs with no baggage, sorted by full name.</returns>
+    /// <exception cref="KeyNotFoundException">
+    /// Thrown if the specified flight does not exist.
+    /// </exception>
     public async Task<List<PassengerDto>> GetPassengersWithZeroBaggageOnFlightAsync(int flightId)
     {
-        // Убеждаемся, что рейс существует
         var flight = await flightRepository.GetAsync(flightId);
         if (flight == null)
             throw new KeyNotFoundException($"Flight with ID '{flightId}' not found.");
@@ -78,6 +95,13 @@ public class AnalyticsService(
             .ToList();
     }
 
+    /// <summary>
+    /// Retrieves flights of a specific aircraft model within a date period.
+    /// </summary>
+    /// <param name="modelId">The unique identifier of the aircraft model.</param>
+    /// <param name="from">Start date of the period (inclusive).</param>
+    /// <param name="to">End date of the period (inclusive).</param>
+    /// <returns>A list of flight DTOs matching the criteria.</returns>
     public async Task<List<FlightDto>> GetFlightsByModelInPeriodAsync(int modelId, DateTime from, DateTime to)
     {
         var flights = await flightRepository.GetAllAsync();
@@ -89,6 +113,12 @@ public class AnalyticsService(
             .ToList();
     }
 
+    /// <summary>
+    /// Retrieves flights by route (departure city → arrival city).
+    /// </summary>
+    /// <param name="departure">The city of departure.</param>
+    /// <param name="arrival">The city of arrival.</param>
+    /// <returns>A list of flight DTOs matching the route.</returns>
     public async Task<List<FlightDto>> GetFlightsByRouteAsync(string departure, string arrival)
     {
         var flights = await flightRepository.GetAllAsync();
