@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   
-  <Sdk Name="Aspire.AppHost.Sdk" Version = "9.5.0" />
+  <Sdk Name="Aspire.AppHost.Sdk" Version="9.5.0" />
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -13,10 +13,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Airline.Api.Host\Airline.Api.Host.csproj" />
+    <ProjectReference Include="..\Airline.Generator.Kafka.Host\Airline.Generator.Kafka.Host.csproj" />
   </ItemGroup>
 
 
   <ItemGroup>
+    <PackageReference Include="Aspire.Hosting.Kafka" Version="13.1.0" />
     <PackageReference Include="Aspire.Hosting.MongoDB" Version="13.0.0" />
 	<PackageReference Include="Aspire.Hosting.AppHost" Version="13.0.0" />
   </ItemGroup>

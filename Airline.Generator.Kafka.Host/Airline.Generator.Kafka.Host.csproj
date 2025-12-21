@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Aspire.Hosting.Kafka" Version="8.2.2" />
+		<PackageReference Include="Confluent.Kafka" Version="2.5.3" />
+		<PackageReference Include="Bogus" Version="35.6.5" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.9.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Airline.Application.Contracts\Airline.Application.Contracts.csproj" />
+		<ProjectReference Include="..\Airline.ServiceDefaults\Airline.ServiceDefaults.csproj" />
+	</ItemGroup>
+
+</Project>
