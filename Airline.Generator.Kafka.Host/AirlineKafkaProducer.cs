@@ -1,6 +1,6 @@
+п»їusing Confluent.Kafka;
 using Airline.Application.Contracts.Flight;
-using Airline.Generator.Kafka.Host.Interface;
-using Confluent.Kafka;
+using Airline.Generator.Kafka.Host.Interfaces;
 
 namespace Airline.Generator.Kafka.Host;
 
@@ -26,9 +26,8 @@ public sealed class AirlineKafkaProducer(
     {
         try
         {
-            logger.LogInformation("Sending a batch of {count} flight contracts to {topic}", batch.Count, _topicName);
+            logger.LogInformation("Sending a batch of {count} contracts to {topic}", batch.Count, _topicName);
 
-            // Используем FlightCode первого рейса в пакете как ключ (или генерируем уникальный)
             var key = batch.FirstOrDefault()?.FlightCode ?? Guid.NewGuid().ToString();
 
             var message = new Message<string, IList<CreateFlightDto>>
@@ -41,7 +40,7 @@ public sealed class AirlineKafkaProducer(
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Exception occurred during sending a batch of {count} flight contracts to {topic}", batch.Count, _topicName);
+            logger.LogError(ex, "Exception occurred during sending a batch of {count} contracts to {topic}", batch.Count, _topicName);
         }
     }
 }

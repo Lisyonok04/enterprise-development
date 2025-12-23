@@ -1,7 +1,6 @@
-﻿using Airline.Application.Contracts.Flight;
+using Airline.Application.Contracts.Flight;
 using Airline.Generator.Kafka.Host.Generator;
-using Airline.Generator.Kafka.Host.Interface;
-using Microsoft.AspNetCore.Http;
+using Airline.Generator.Kafka.Host.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Airline.Generator.Kafka.Host.Controllers;
@@ -22,10 +21,10 @@ public sealed class GeneratorController(
     /// <summary>
     /// Generates flight contracts and sends them via Kafka using batches and delay between sends
     /// </summary>
-    /// <param name="batchSize">Number of contracts in each batch</param>
-    /// <param name="payloadLimit">Total number of contracts to generate</param>
+    /// <param name="batchSize">Batch size</param>
+    /// <param name="payloadLimit">Total number of contracts to send</param>
     /// <param name="waitTime">Delay in seconds between batches</param>
-    /// <returns>List of generated flight contracts</returns>
+    /// <returns>List of generated contracts</returns>
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -34,21 +33,18 @@ public sealed class GeneratorController(
         [FromQuery] int payloadLimit,
         [FromQuery] int waitTime)
     {
-        logger.LogInformation("Generating {limit} flight contracts via {batchSize} batches with {waitTime}s delay",
-            payloadLimit, batchSize, waitTime);
+        logger.LogInformation("Generating {limit} contracts via {batchSize} batches and {waitTime}s delay", payloadLimit, batchSize, waitTime);
 
         try
         {
             var list = new List<CreateFlightDto>(payloadLimit);
             var counter = 0;
 
-            // Чтение пула существующих ModelId из конфигурации
             var modelIds = configuration.GetSection("Generator:SeedModelIds")
                 .Get<List<int>>() ?? [];
 
             if (modelIds.Count == 0)
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                    "SeedModelIds configuration is empty or missing");
+                return StatusCode(StatusCodes.Status500InternalServerError, "SeedModelIds is empty");
 
             while (counter < payloadLimit)
             {
@@ -58,7 +54,7 @@ public sealed class GeneratorController(
 
                 await producerService.SendAsync(batch);
 
-                logger.LogInformation("Batch of {batchSize} flight contracts has been sent to Kafka", currentBatchSize);
+                logger.LogInformation("Batch of {batchSize} items has been sent", currentBatchSize);
 
                 counter += currentBatchSize;
                 list.AddRange(batch);
@@ -67,12 +63,12 @@ public sealed class GeneratorController(
                     await Task.Delay(waitTime * 1000);
             }
 
-            logger.LogInformation("{Method} method of {Controller} executed successfully", nameof(Get), GetType().Name);
+            logger.LogInformation("{method} method of {controller} executed successfully", nameof(Get), GetType().Name);
             return Ok(list);
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "An exception occurred during {Method} method of {Controller}", nameof(Get), GetType().Name);
+            logger.LogError(ex, "An exception happened during {method} method of {controller}", nameof(Get), GetType().Name);
             return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
         }
     }

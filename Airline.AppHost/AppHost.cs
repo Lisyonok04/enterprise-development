@@ -1,12 +1,12 @@
 using Aspire.Hosting;
 
 var builder = DistributedApplication.CreateBuilder(args);
-var kafka = builder.AddKafka("kafka");
 
-builder.AddProject<Projects.Airline_Generator_Kafka_Host>("airline-generator")
-    .WithReference(kafka);
+var db = builder.AddMongoDB("mongo").AddDatabase("db");
 
 builder.AddProject<Projects.Airline_Api_Host>("airline-api-host")
-    .WithReference(kafka);
-
+    .WithReference(db, "airlineClient")
+    .WaitFor(db);
+builder.AddProject<Projects.Airline_Generator_Kafka_Host>("airline-generator-kafka-host");
 builder.Build().Run();
+
