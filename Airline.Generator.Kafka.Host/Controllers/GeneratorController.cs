@@ -40,17 +40,23 @@ public sealed class GeneratorController(
             var list = new List<CreateFlightDto>(payloadLimit);
             var counter = 0;
 
-            var modelIds = configuration.GetSection("Generator:SeedModelIds")
-                .Get<List<int>>() ?? [];
+            var modelId = configuration.GetSection("FlightGenerator:ModelFamilyId")
+                .Get<int[]>() ?? Array.Empty<int>();
 
-            if (modelIds.Count == 0)
+            var departureCity = configuration.GetSection("FlightGenerator:DepartureCity")
+                .Get<string[]>() ?? Array.Empty<string>();
+
+            var arrivalCity = configuration.GetSection("FlightGenerator:ArrivalCity")
+                .Get<string[]>() ?? Array.Empty<string>();
+
+            if (modelId.Length == 0 || departureCity.Length == 0 || arrivalCity.Length == 0)
                 return StatusCode(StatusCodes.Status500InternalServerError, "SeedModelIds is empty");
 
             while (counter < payloadLimit)
             {
                 var currentBatchSize = Math.Min(batchSize, payloadLimit - counter);
 
-                var batch = FlightGenerator.GenerateContracts(currentBatchSize, modelIds);
+                var batch = FlightGenerator.GenerateContracts(currentBatchSize, modelId, departureCity, arrivalCity);
 
                 await producerService.SendAsync(batch);
 
