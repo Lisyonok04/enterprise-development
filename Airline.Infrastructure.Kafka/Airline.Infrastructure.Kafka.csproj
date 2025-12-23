@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  
+  <ItemGroup>
+	<PackageReference Include="Aspire.Confluent.Kafka" Version="13.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Airline.Application.Contracts\Airline.Application.Contracts.csproj" />
+    <ProjectReference Include="..\Airline.Domain\Airline.Domain.csproj" />
+    <ProjectReference Include="..\Airline.Infrastructure.EfCore\Airline.Infrastructure.EfCore.csproj" />
+    <ProjectReference Include="..\Airline.ServiceDefaults\Airline.ServiceDefaults.csproj" />
+  </ItemGroup>
+
+</Project>
