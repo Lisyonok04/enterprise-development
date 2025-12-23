@@ -10,6 +10,8 @@ using Airline.Domain.DataSeed;
 using Airline.Domain.Items;
 using Airline.Infrastructure.EfCore;
 using Airline.Infrastructure.EfCore.Repositories;
+using Airline.Infrastructure.Kafka;
+using Airline.Infrastructure.Kafka.Deserializers;
 using Airline.ServiceDefaults;
 using Microsoft.EntityFrameworkCore;
 using MongoDB.Driver;
@@ -74,6 +76,20 @@ builder.Services.AddDbContext<AirlineDbContext>((services, o) =>
     var db = services.GetRequiredService<IMongoDatabase>();
     o.UseMongoDB(db.Client, db.DatabaseNamespace.DatabaseName);
 });
+
+// Kafka Consumer
+builder.Services.AddHostedService<KafkaConsumer>();
+builder.AddKafkaConsumer<string, IList<CreateFlightDto>>("airline-kafka",
+    configureBuilder: kafkaBuilder =>
+    {
+        kafkaBuilder.SetKeyDeserializer(new AirlineKeyDeserializer());
+        kafkaBuilder.SetValueDeserializer(new AirlineValueDeserializer());
+    },
+    configureSettings: settings =>
+    {
+        settings.Config.GroupId = "airline-consumer";
+        settings.Config.AutoOffsetReset = Confluent.Kafka.AutoOffsetReset.Earliest;
+    });
 
 var app = builder.Build();
 

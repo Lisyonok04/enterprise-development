@@ -16,6 +16,7 @@
     <ProjectReference Include="..\Airline.Application.Contracts\Airline.Application.Contracts.csproj" />
     <ProjectReference Include="..\Airline.Application\Airline.Application.csproj" />
     <ProjectReference Include="..\Airline.Infrastructure.EfCore\Airline.Infrastructure.EfCore.csproj" />
+    <ProjectReference Include="..\Airline.Infrastructure.Kafka\Airline.Infrastructure.Kafka.csproj" />
     <ProjectReference Include="..\Airline.ServiceDefaults\Airline.ServiceDefaults.csproj" />
   </ItemGroup>
 
