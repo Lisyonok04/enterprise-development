@@ -68,13 +68,14 @@ builder.Services.AddSwaggerGen(c =>
     }
 });
 
+
 // MongoDB 
 builder.AddMongoDBClient("airlineClient");
 
 builder.Services.AddDbContext<AirlineDbContext>((services, o) =>
 {
-    var db = services.GetRequiredService<IMongoDatabase>();
-    o.UseMongoDB(db.Client, db.DatabaseNamespace.DatabaseName);
+    var client = services.GetRequiredService<IMongoClient>();
+    o.UseMongoDB(client, "db");
 });
 
 // Kafka Consumer
