@@ -79,7 +79,7 @@ builder.Services.AddDbContext<AirlineDbContext>((services, o) =>
 });
 
 // Kafka Consumer
-builder.Services.AddHostedService<KafkaConsumer>();
+builder.Services.AddHostedService<FlightKafkaConsumer>();
 builder.AddKafkaConsumer<string, IList<CreateFlightDto>>("airline-kafka",
     configureBuilder: kafkaBuilder =>
     {
