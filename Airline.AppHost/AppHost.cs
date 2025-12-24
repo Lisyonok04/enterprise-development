@@ -3,7 +3,7 @@ var builder = DistributedApplication.CreateBuilder(args);
 var db = builder.AddMongoDB("mongo")
     .AddDatabase("db");
 
-var kafka = builder.AddKafka("airline-kafka")
+var kafka = builder.AddKafka("airline-kafka", 9092) 
     .WithKafkaUI();
 
 var apiHost = builder.AddProject<Projects.Airline_Api_Host>("airline-api-host")
