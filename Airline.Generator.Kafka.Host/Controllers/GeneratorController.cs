@@ -41,13 +41,13 @@ public sealed class GeneratorController(
             var counter = 0;
 
             var modelId = configuration.GetSection("FlightGenerator:ModelFamilyId")
-                .Get<int[]>() ?? Array.Empty<int>();
+                .Get<int[]>() ?? [];
 
             var departureCity = configuration.GetSection("FlightGenerator:DepartureCity")
-                .Get<string[]>() ?? Array.Empty<string>();
+                .Get<string[]>() ?? [];
 
             var arrivalCity = configuration.GetSection("FlightGenerator:ArrivalCity")
-                .Get<string[]>() ?? Array.Empty<string>();
+                .Get<string[]>() ?? [];
 
             if (modelId.Length == 0 || departureCity.Length == 0 || arrivalCity.Length == 0)
                 return StatusCode(StatusCodes.Status500InternalServerError, "SeedModelIds is empty");

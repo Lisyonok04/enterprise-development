@@ -1,8 +1,8 @@
-﻿using Airline.Application.Contracts.Flight;
+﻿using Confluent.Kafka;
+using Airline.Application.Contracts.Flight;
 using Airline.Domain;
 using Airline.Domain.Items;
 using Airline.Infrastructure.Kafka.Deserializers;
-using Confluent.Kafka;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -11,7 +11,7 @@ using Microsoft.Extensions.Logging;
 namespace Airline.Infrastructure.Kafka;
 
 /// <summary>
-/// Background Kafka consumer that subscribes to configured topic and processes flight contract batches.
+/// Kafka consumer service that processes flight contracts from a specified topic and persists them to the database.
 /// </summary>
 public sealed class FlightKafkaConsumer(
     IServiceScopeFactory scopeFactory,
@@ -23,7 +23,7 @@ public sealed class FlightKafkaConsumer(
         configuration["Kafka:TopicName"] ?? throw new KeyNotFoundException("Kafka:TopicName is missing");
 
     /// <summary>
-    /// Executes the message consumption loop with automatic reconnection and handling of topic unavailability.
+    /// Initializes the Kafka consumer and starts the message processing loop with automatic reconnection.
     /// </summary>
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
@@ -133,7 +133,7 @@ public sealed class FlightKafkaConsumer(
     }
 
     /// <summary>
-    /// Gracefully stops the consumer when the application shuts down.
+    /// Performs graceful shutdown of the Kafka consumer service.
     /// </summary>
     public override async Task StopAsync(CancellationToken stoppingToken)
     {

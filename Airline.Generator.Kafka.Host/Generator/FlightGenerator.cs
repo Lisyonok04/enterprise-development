@@ -1,5 +1,4 @@
 ﻿using Airline.Application.Contracts.Flight;
-using Airline.Domain.Items;
 using Bogus;
 
 namespace Airline.Generator.Kafka.Host.Generator;
