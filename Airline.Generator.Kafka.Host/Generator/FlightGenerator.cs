@@ -23,7 +23,7 @@ public static class FlightGenerator
         IList<string> arrivalCity) =>
         new Faker<CreateFlightDto>()
             .CustomInstantiator(f => new CreateFlightDto(
-                FlightCode: f.Random.String2(2, "ABCDEFGHIJKLMNOPQRSTUVWXYZ") + f.Random.Number(100, 999),
+                FlightCode: $"{f.Random.Char('A', 'Z')}{f.Random.Char('A', 'Z')}{f.Random.Number(100, 999)}",
                 DepartureCity: f.PickRandom(departureCity),
                 ArrivalCity: f.PickRandom(arrivalCity),
                 DepartureDateTime: f.Date.Future(),
