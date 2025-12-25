@@ -10,13 +10,11 @@ namespace Airline.Generator.Kafka.Host.Controllers;
 /// </summary>
 /// <param name="logger">Logger instance</param>
 /// <param name="producerService">Producer service used to send contracts</param>
-/// <param name="configuration">Configuration instance used to read generator settings</param>
 [Route("api/[controller]")]
 [ApiController]
 public sealed class GeneratorController(
     ILogger<GeneratorController> logger,
-    IProducerService producerService,
-    IConfiguration configuration) : ControllerBase
+    IProducerService producerService) : ControllerBase
 {
     /// <summary>
     /// Generates flight contracts and sends them via Kafka using batches and delay between sends
@@ -33,44 +31,32 @@ public sealed class GeneratorController(
         [FromQuery] int payloadLimit,
         [FromQuery] int waitTime)
     {
-        logger.LogInformation("Generating {limit} contracts via {batchSize} batches and {waitTime}s delay", payloadLimit, batchSize, waitTime);
+        logger.LogInformation("Generating {limit} contracts via {batchSize} batches and {waitTime}s delay",
+            payloadLimit, batchSize, waitTime);
 
         try
         {
-            var list = new List<CreateFlightDto>(payloadLimit);
+            var results = new List<CreateFlightDto>();
             var counter = 0;
-
-            var modelId = configuration.GetSection("FlightGenerator:ModelFamilyId")
-                .Get<int[]>() ?? [];
-
-            var departureCity = configuration.GetSection("FlightGenerator:DepartureCity")
-                .Get<string[]>() ?? [];
-
-            var arrivalCity = configuration.GetSection("FlightGenerator:ArrivalCity")
-                .Get<string[]>() ?? [];
-
-            if (modelId.Length == 0 || departureCity.Length == 0 || arrivalCity.Length == 0)
-                return StatusCode(StatusCodes.Status500InternalServerError, "SeedModelIds is empty");
 
             while (counter < payloadLimit)
             {
                 var currentBatchSize = Math.Min(batchSize, payloadLimit - counter);
-
-                var batch = FlightGenerator.GenerateContracts(currentBatchSize, modelId, departureCity, arrivalCity);
+                var batch = FlightGenerator.GenerateContracts(currentBatchSize);
 
                 await producerService.SendAsync(batch);
 
                 logger.LogInformation("Batch of {batchSize} items has been sent", currentBatchSize);
 
+                results.AddRange(batch);
                 counter += currentBatchSize;
-                list.AddRange(batch);
 
                 if (counter < payloadLimit && waitTime > 0)
                     await Task.Delay(waitTime * 1000);
             }
 
             logger.LogInformation("{method} method of {controller} executed successfully", nameof(Get), GetType().Name);
-            return Ok(list);
+            return Ok(results);
         }
         catch (Exception ex)
         {

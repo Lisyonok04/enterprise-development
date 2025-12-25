@@ -1,20 +1,22 @@
 using Airline.Application.Contracts.Flight;
 using Airline.Generator.Kafka.Host;
+using Airline.Generator.Kafka.Host.Generator;
 using Airline.Generator.Kafka.Host.Interfaces;
 using Airline.Generator.Kafka.Host.Serializers;
 using Airline.ServiceDefaults;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.AddKafkaProducer<string, IList<CreateFlightDto>>(
-    "airline-kafka",
-    kafkaBuilder =>
+builder.AddServiceDefaults();
+
+FlightGenerator.Initialize(builder.Configuration);
+
+builder.AddKafkaProducer<string, IList<CreateFlightDto>>("airline-kafka",
+    configureBuilder: kafkaBuilder =>
     {
         kafkaBuilder.SetKeySerializer(new AirlineKeySerializer());
         kafkaBuilder.SetValueSerializer(new AirlineValueSerializer());
     });
-
-builder.AddServiceDefaults();
 
 builder.Services.AddScoped<IProducerService, AirlineKafkaProducer>();
 
